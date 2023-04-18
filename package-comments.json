@@ -1,0 +1,47 @@
+{
+  "scripts": {
+    "test:staged": "",
+    "test:watch": "",
+    "lint": "",
+    "lint:staged": "",
+    "dev:migration:generate": "it loads .env.development, create a migration from changes in Prisma schema, apply it to the database",
+    "dev:migration:run": "it loads .env.development, apply pending migrations to the database",
+    "test:migration:generate": "it loads .env.test, create a migration from changes in Prisma schema, apply it to the database",
+    "test:migration:run": "it loads .env.test, apply pending migrations to the database",
+    "dev:load-envs": "it loads .env.development envs using dotenv-cli",
+    "dev:seed": "it seeds dev db in ./prisma/seed.ts",
+    "test:load-envs": "it loads .env.test envs using dotenv-cli",
+    "test:seed": "it seeds test db in ./prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@prisma/client": "",
+    "@types/jest": "",
+    "@typescript-eslint/eslint-plugin": "",
+    "@typescript-eslint/parser": "",
+    "eslint": "",
+    "eslint-plugin-import": "",
+    "husky": "",
+    "jest": "",
+    "lint-staged": "",
+    "nodemon": "",
+    "prettier": "",
+    "prisma": "",
+    "ts-jest": "",
+    "ts-node": "",
+    "tsconfig-paths": "",
+    "typescript": "",
+    "typescript-transform-paths": ""
+  },
+  "dependencies": {
+    "bcrypt": "",
+    "cors": "",
+    "dotenv": "",
+    "dotenv-expand": "",
+    "eslint-import-resolver-typescript": "",
+    "express": "",
+    "express-async-errors": "",
+    "http-status": "",
+    "joi": "",
+    "jsonwebtoken": ""
+  }
+}
