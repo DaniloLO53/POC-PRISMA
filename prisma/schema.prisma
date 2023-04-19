@@ -11,61 +11,118 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique
-  password   String
-  name       String?
-  posts      Post[]
-  comments   Comment[]
-  likes      Like[]
-  followers  Follow[]  @relation("Follower")
-  following  Follow[]  @relation("Following")
-  created_at DateTime  @default(now())
+  id                   Int                @id @default(autoincrement())
+  email                String             @unique
+  password             String
+  first_name           String?
+  last_name            String?
+  picture_id           Int?
+  birth                DateTime
+  description          String? // to be implemented...
+  posts                Post[]
+  post_ratings         PostRating[]
+  comment_ratings      CommentRating[]
+  comments             Comment[]
+  events_post_comments EventPostComment[]
+  events_post_ratings  EventPostRating[]
+  events_post          EventPost[]
+  followers            Relationship[]     @relation("followed")
+  following            Relationship[]     @relation("following")
+  created_at           DateTime           @default(now())
 }
 
-model Follow {
-  id                Int      @id @default(autoincrement())
-  following         User     @relation("Following", fields: [following_user_id], references: [id])
-  following_user_id Int
-  follower          User     @relation("Follower", fields: [follower_user_id], references: [id])
-  follower_user_id  Int
-  created_at        DateTime @default(now())
+model Picture {
+  id      Int   @id @default(autoincrement())
+  content Bytes
+}
+
+model PostImage {
+  id      Int   @id @default(autoincrement())
+  content Bytes
+  post    Post?
+}
+
+model PostRating {
+  id         Int               @id @default(autoincrement())
+  post       Post              @relation(fields: [post_id], references: [id])
+  post_id    Int
+  author     User              @relation(fields: [author_id], references: [id])
+  author_id  Int
+  type       Rating            @default(LIKE)
+  events     EventPostRating[]
+  created_at DateTime          @default(now())
 }
 
 model Post {
-  id         Int       @id @default(autoincrement())
-  content    String    @unique
+  id         Int          @id @default(autoincrement())
+  author     User         @relation(fields: [author_id], references: [id])
   author_id  Int
-  author     User      @relation(fields: [author_id], references: [id])
-  image      Image?
-  likes      Like[]
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  image      PostImage    @relation(fields: [image_id], references: [id])
+  image_id   Int          @unique
+  ratings    PostRating[]
   comments   Comment[]
-  created_at DateTime  @default(now())
+  events     EventPost[]
 }
 
 model Comment {
-  id         Int      @id @default(autoincrement())
+  id         Int                @id @default(autoincrement())
+  post       Post               @relation(fields: [post_id], references: [id])
+  post_id    Int
+  author     User               @relation(fields: [author_id], references: [id])
+  author_id  Int
+  ratings    CommentRating[]
+  events     EventPostComment[]
   content    String
-  post_id    Int
-  post       Post     @relation(fields: [post_id], references: [id])
-  author     User?    @relation(fields: [author_id], references: [id])
-  author_id  Int?
-  created_at DateTime @default(now())
+  created_at DateTime           @default(now())
+  updated_at DateTime           @updatedAt
 }
 
-model Like {
+model CommentRating {
   id         Int      @id @default(autoincrement())
-  post       Post     @relation(fields: [post_id], references: [id])
-  author     User?    @relation(fields: [author_id], references: [id])
-  author_id  Int?
-  post_id    Int
+  comment    Comment  @relation(fields: [comment_id], references: [id])
+  comment_id Int
+  author     User     @relation(fields: [author_id], references: [id])
+  author_id  Int
   created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-model Image {
-  id         Int      @id @default(autoincrement())
-  post       Post     @relation(fields: [post_id], references: [id])
-  media      Bytes
-  created_at DateTime @default(now())
-  post_id    Int      @unique
+model EventPostComment {
+  id         Int     @id @default(autoincrement())
+  user       User    @relation(fields: [show_to], references: [id])
+  show_to    Int
+  comment    Comment @relation(fields: [comment_id], references: [id])
+  comment_id Int
+}
+
+model EventPostRating {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [show_to], references: [id])
+  show_to   Int
+  rating    PostRating @relation(fields: [rating_id], references: [id])
+  rating_id Int
+}
+
+model EventPost {
+  id      Int  @id @default(autoincrement())
+  user    User @relation(fields: [show_to], references: [id])
+  show_to Int
+  post    Post @relation(fields: [post_id], references: [id])
+  post_id Int
+}
+
+model Relationship {
+  user_followed  User @relation(fields: [followed], references: [id], name: "followed")
+  followed       Int
+  user_following User @relation(fields: [following], references: [id], name: "following")
+  following      Int
+
+  @@unique([followed, following])
+}
+
+enum Rating {
+  LIKE
+  DISLIKE
 }

@@ -7,12 +7,16 @@ async function main() {
     console.log('No users found - creating new user...');
     user = await prisma.user.create({
       data: {
-        name: "user001",
-        id: 1,
+        first_name: "Danilo",
+        last_name: "Leão de Oliveira",
+        birth: new Date(29, 5, 1996),
+        description: "Hi, I'm Danilo",
         password: "123",
         email: "user@gmail.com"
       }
     })
+  } else {
+    console.log('User found')
   }
 
   console.log({ user });

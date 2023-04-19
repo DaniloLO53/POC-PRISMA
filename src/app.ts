@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import cors from "cors";
 import { connectDb, disconnectDB, loadEnv } from "./config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-import { userRouter } from "./routes";
+import { usersRoute } from "./routes";
 
 loadEnv();
 
@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/users", userRouter);
+app.use("/users", usersRoute);
 app.use(errorHandler);
 
 export function init(): Promise<Express> {
