@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky install",
     "test:staged": "NODE_ENV=test jest --passWithNoTests --runInBand",
     "test:watch": "npx jest --watchAll --passWithNoTests --runInBand",
     "lint": "eslint .",
