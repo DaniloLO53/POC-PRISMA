@@ -15,10 +15,10 @@ function validate(schema: ObjectSchema, type: SchemaType) {
     const { error } = schema.validate(request[type], { abortEarly: false });
 
     if (error) {
-      const details = error.details.map((detail) => detail.message);
+      const details = error.details?.map((detail) => detail.message) || [];
       const customError = invalidDataError(details);
-  
-      return response.status(customError.statusCode).send(customError.details);
+
+      next(customError);
     } else {
       next();
     }

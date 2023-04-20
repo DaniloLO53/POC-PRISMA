@@ -3,7 +3,7 @@ import { MessagesErrors } from "@/utils/messages/errors.messages";
 import { ClientErrors } from "@/utils/statusCodes/clientErrors";
 
 export function duplicatedUserError(): ICustomError {
-  const error = new Error(MessagesErrors.INVALID_DATA) as ICustomError;
+  const error = new Error(MessagesErrors.DUPLICATED_EMAIL) as ICustomError;
   error.statusCode = ClientErrors.CONFLICT;
   error.name = "DuplicatedEmailError";
 
