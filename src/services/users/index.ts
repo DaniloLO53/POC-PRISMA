@@ -1,6 +1,6 @@
 import { duplicatedUserError } from "@/errors/duplicatedUser.errors";
 import usersRepository from "@/repositories/users";
-import { UserData } from "@/schemas";
+import { IUserData } from "@/schemas";
 
 export async function getAllUsers() {
   const users = await usersRepository.findAll();
@@ -8,7 +8,7 @@ export async function getAllUsers() {
   return users;
 }
 
-export async function postUser(data: UserData): Promise<void> {
+export async function postUser(data: IUserData): Promise<void> {
   const { email } = data;
 
   const user = await usersRepository.findUnique(email);

@@ -1,5 +1,5 @@
 import { prisma } from "@/config";
-import { UserData } from "@/schemas";
+import { IUserData } from "@/schemas";
 
 async function findAll() {
   const users = await prisma.user.findMany();
@@ -17,7 +17,7 @@ async function findUnique(email: string) {
   return users;
 }
 
-async function create(data: UserData) {
+async function create(data: IUserData) {
   const users = await prisma.user.create({ data });
 
   return users;

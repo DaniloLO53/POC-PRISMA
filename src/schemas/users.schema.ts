@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const birthPattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
 
-export interface UserData {
+export interface IUserData {
   email: string,
   first_name: string,
   last_name: string,
