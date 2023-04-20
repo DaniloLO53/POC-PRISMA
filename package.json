@@ -8,7 +8,7 @@
     "test:staged": "NODE_ENV=test jest --passWithNoTests --runInBand",
     "test:watch": "npx jest --watchAll --passWithNoTests --runInBand",
     "lint": "eslint .",
-    "dev": "NODE_ENV=development nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
+    "dev": "npx kill-port 5000 && NODE_ENV=development nodemon --watch 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts' -e ts",
     "dev:migration:run": "npm run dev:load-envs prisma migrate deploy",
     "dev:migration:generate": "npm run dev:load-envs prisma migrate dev",
     "test:migration:run": "npm run test:load-envs prisma migrate deploy",

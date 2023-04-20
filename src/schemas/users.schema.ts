@@ -2,6 +2,14 @@ import Joi from "joi";
 
 const birthPattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
 
+export interface UserData {
+  email: string,
+  first_name: string,
+  last_name: string,
+  password: string,
+  birth: string
+}
+
 export const usersSchema = Joi.object({
   email: Joi
     .string()

@@ -17,7 +17,7 @@ model User {
   first_name           String?
   last_name            String?
   picture_id           Int?
-  birth                DateTime
+  birth                String
   description          String? // to be implemented...
   posts                Post[]
   post_ratings         PostRating[]

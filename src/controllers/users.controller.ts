@@ -15,3 +15,32 @@ export async function getAllUsers(
     next(error);
   }
 }
+
+export async function postUser(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const {
+    first_name,
+    last_name,
+    birth,
+    email,
+    password
+  } = request.body;
+
+  try {
+    await usersService.postUser({
+      first_name,
+      last_name,
+      birth,
+      email,
+      password
+    });
+
+    return response.sendStatus(Successful.CREATED);
+  } catch (error) {
+    console.log("Error", error instanceof Error);
+    next(error);
+  }
+}

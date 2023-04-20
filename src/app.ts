@@ -11,8 +11,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/users", usersRoute);
-app.use(errorHandler);
+app
+  .use("/users", usersRoute)
+  .use(errorHandler);
 
 export function init(): Promise<Express> {
   connectDb();
