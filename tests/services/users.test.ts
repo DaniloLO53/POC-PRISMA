@@ -25,22 +25,36 @@ describe("Services from user", () => {
     password: faker.internet.password()
   });
 
-  it("should return 409 when user with the same email is already registered",
-    async () => {
-      const userData = generateValidUserData();
-      await mockCreateUser(userData);
+  it("should create user when datas are valid", async () => {
+    const userData = generateValidUserData();
+    const { first_name, last_name, email } = userData;
+    await usersService.postUser(userData);
 
-      try {
-        const newUser = generateValidUserData();
-        const duplicatedUser = { ...newUser, email: userData.email };
+    const userCreated = await prisma.user.findUnique({
+      where: { email: userData.email }
+    }) as User;
+
+    expect(userCreated).toEqual(expect.objectContaining({
+      first_name, last_name, email
+    }));
+  });
+
+  it(`should throw duplicatedUserError when user with the same email is already
+  registered`, async () => {
+    const userData = generateValidUserData();
+    await mockCreateUser(userData);
+
+    try {
+      const newUser = generateValidUserData();
+      const duplicatedUser = { ...newUser, email: userData.email };
         
-        await usersService.postUser(duplicatedUser);
+      await usersService.postUser(duplicatedUser);
 
-        fail("it should throw duplicatedUserError");
-      } catch (error) {
-        expect(error.message).toBe("Email already registered");
-      }
-    });
+      fail("it should throw duplicatedUserError");
+    } catch (error) {
+      expect(error.message).toBe("Email already registered");
+    }
+  });
 
   it("should encrypt password", async () => {
     const userData = generateValidUserData();
