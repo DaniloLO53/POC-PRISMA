@@ -9,8 +9,6 @@ export function errorHandler(
   response: Response,
   next: NextFunction
 ) {
-  console.log("Hello", error.details);
-
   if (error.name === "ConflictError" || error.name === "DuplicatedEmailError") {
     return response.status(ClientErrors.CONFLICT).send({
       message: error.message,
@@ -18,7 +16,6 @@ export function errorHandler(
   }
 
   if (error.name === "InvalidDataError") {
-    console.log("oi");
     return response.status(ClientErrors.UNPROCESSABLE_ENTITY).send({
       message: error.message,
     });

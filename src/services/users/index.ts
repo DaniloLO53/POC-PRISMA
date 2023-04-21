@@ -13,8 +13,6 @@ export async function postUser(data: IUserData): Promise<void> {
 
   const user = await usersRepository.findUnique(email);
 
-  console.log("User", user);
-
   if (user) throw duplicatedUserError();
 
   await usersRepository.create(data);

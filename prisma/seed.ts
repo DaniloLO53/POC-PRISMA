@@ -9,7 +9,7 @@ async function main() {
       data: {
         first_name: "Danilo",
         last_name: "Leão de Oliveira",
-        birth: new Date(29, 5, 1996),
+        birth: "29-05-1996",
         description: "Hi, I'm Danilo",
         password: "123",
         email: "user@gmail.com"

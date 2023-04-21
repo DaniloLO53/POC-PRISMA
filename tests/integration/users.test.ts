@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { faker } from "@faker-js/faker";
 import { cleanDb } from "../helpers";
-import app, { init } from "@/app";
+import app, { close, init } from "@/app";
 import { IUserData } from "@/schemas";
 
 beforeAll(async () => {
@@ -10,6 +10,11 @@ beforeAll(async () => {
 });
 
 const server = supertest(app);
+
+// afterAll(async () => {
+//   await close();
+// });
+
 
 describe("CRUD on users", () => {
   describe("GET /users", () => {
@@ -22,7 +27,6 @@ describe("CRUD on users", () => {
   });
 
   describe("POST /users", () => {
-  
     it("should return 201 when user is created succesfully", async () => {
       const expectedCode = 201;
       const userData = {
@@ -30,8 +34,8 @@ describe("CRUD on users", () => {
         last_name: faker.name.lastName(),
         birth: "29-05-1996",
         email: faker.internet.email(
-          (this as IUserData).first_name,
-          (this as IUserData).last_name
+          (this as unknown as IUserData).first_name,
+          (this as unknown as IUserData).last_name
         ),
         password: faker.internet.password()
       };

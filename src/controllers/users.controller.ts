@@ -40,7 +40,6 @@ export async function postUser(
 
     return response.sendStatus(Successful.CREATED);
   } catch (error) {
-    console.log("Error", error instanceof Error);
     next(error);
   }
 }
