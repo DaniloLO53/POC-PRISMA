@@ -1,11 +1,13 @@
 import express from "express";
-import { getAllUsers, postUser } from "@/controllers";
+import { getAllUsers, signUp, signIn } from "@/controllers";
 import { validateBody } from "@/middlewares/schemaValidation.middleware";
-import { usersSchema } from "@/schemas";
+import { signUpSchema, signInSchema } from "@/schemas";
+import { setCookies } from "@/middlewares/setCookies.middleware";
 
 const usersRoute = express.Router();
 
-usersRoute.post("/", validateBody(usersSchema), postUser);
+usersRoute.post("/sign-up", validateBody(signUpSchema), signUp);
+usersRoute.post("/sign-in", validateBody(signInSchema), setCookies, signIn);
 usersRoute.get("/", getAllUsers);
 
 export { usersRoute };

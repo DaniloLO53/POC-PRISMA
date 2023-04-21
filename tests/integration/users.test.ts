@@ -26,7 +26,7 @@ describe("CRUD on users", () => {
     });
   });
 
-  describe("POST /users", () => {
+  describe("POST /users/sign-up", () => {
     it("should return 201 when user is created succesfully", async () => {
       const expectedCode = 201;
       const userData = {
@@ -39,7 +39,7 @@ describe("CRUD on users", () => {
         ),
         password: faker.internet.password()
       };
-      const result = await server.post("/users").send(userData);
+      const result = await server.post("/users/sign-up").send(userData);
 
       expect(result.status).toBe(expectedCode);
     });

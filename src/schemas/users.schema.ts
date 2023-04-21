@@ -10,7 +10,7 @@ export interface IUserData {
   birth: string
 }
 
-export const usersSchema = Joi.object({
+export const signUpSchema = Joi.object({
   email: Joi
     .string()
     .trim()
@@ -21,4 +21,14 @@ export const usersSchema = Joi.object({
   last_name: Joi.string().trim().min(1).required(),
   password: Joi.string().trim().min(1).required(),
   birth: Joi.string().trim().pattern(new RegExp(birthPattern)).required()
+});
+
+export const signInSchema = Joi.object({
+  email: Joi
+    .string()
+    .trim()
+    .email()
+    .error(() => new Error("Value must be an email"))
+    .required(),
+  password: Joi.string().trim().min(1).required(),
 });

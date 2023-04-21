@@ -46,7 +46,7 @@ describe("Schema from data user", () => {
         first_name: name,
         last_name: name
       };
-      const response = await server.post("/users").send(data);
+      const response = await server.post("/users/sign-up").send(data);
       expect(response.status).toBe(expectedCode);
     }
   });
@@ -66,7 +66,7 @@ describe("Schema from data user", () => {
 
     for (const email of invalidEmails) {
       const data = { ...validData, email };
-      const response = await server.post("/users").send(data);
+      const response = await server.post("/users/sign-up").send(data);
       expect(response.status).toBe(expectedCode);
     }
   });

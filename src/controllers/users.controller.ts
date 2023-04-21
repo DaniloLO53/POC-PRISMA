@@ -16,11 +16,17 @@ export async function getAllUsers(
   }
 }
 
-export async function postUser(
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+export async function signIn(request: Request, response: Response, next: NextFunction) {
+  try {
+    const { token } = request.cookies;
+
+    return response.status(Successful.CREATED).send({ token });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function signUp(request: Request, response: Response, next: NextFunction) {
   const {
     first_name,
     last_name,
@@ -30,7 +36,7 @@ export async function postUser(
   } = request.body;
 
   try {
-    await usersService.postUser({
+    await usersService.signUp({
       first_name,
       last_name,
       birth,

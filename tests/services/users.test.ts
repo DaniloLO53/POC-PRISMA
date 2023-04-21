@@ -28,7 +28,7 @@ describe("Services from user", () => {
   it("should create user when datas are valid", async () => {
     const userData = generateValidUserData();
     const { first_name, last_name, email } = userData;
-    await usersService.postUser(userData);
+    await usersService.signUp(userData);
 
     const userCreated = await prisma.user.findUnique({
       where: { email: userData.email }
@@ -48,7 +48,7 @@ describe("Services from user", () => {
       const newUser = generateValidUserData();
       const duplicatedUser = { ...newUser, email: userData.email };
         
-      await usersService.postUser(duplicatedUser);
+      await usersService.signUp(duplicatedUser);
 
       fail("it should throw duplicatedUserError");
     } catch (error) {
