@@ -11,10 +11,9 @@ beforeAll(async () => {
 
 const server = supertest(app);
 
-// afterAll(async () => {
-//   await close();
-// });
-
+afterAll(async () => {
+  await close();
+});
 
 describe("CRUD on users", () => {
   describe("GET /users", () => {
