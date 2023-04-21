@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { duplicatedUserError } from "@/errors/duplicatedUser.errors";
 import usersRepository from "@/repositories/users";
 import { IUserData } from "@/schemas";
@@ -9,13 +10,15 @@ export async function getAllUsers() {
 }
 
 export async function postUser(data: IUserData): Promise<void> {
-  const { email } = data;
+  const { email, password } = data;
 
   const user = await usersRepository.findUnique(email);
 
   if (user) throw duplicatedUserError();
 
-  await usersRepository.create(data);
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  await usersRepository.create({ ...data, password: hashedPassword });
 }
 
 const usersService = {

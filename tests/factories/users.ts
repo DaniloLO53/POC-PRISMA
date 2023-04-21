@@ -1,9 +1,12 @@
 import { User } from "@prisma/client";
+import bcrypt from "bcrypt";
 import { IUserData } from "@/schemas";
 import { prisma } from "@/config";
 
-export function mockCreateUser(userData: IUserData): Promise<User> {
+export async function mockCreateUser(userData: IUserData): Promise<User> {
+  const hashedPassword = await bcrypt.hash(userData.password, 12);
+
   return prisma.user.create({
-    data: userData
+    data: { ...userData, password: hashedPassword }
   });
 }
