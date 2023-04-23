@@ -27,7 +27,7 @@ export async function signUp(data: IUserData): Promise<void> {
 }
 
 export async function signIn(
-  data: Pick<IUserData, "email" | "password">
+  data: Pick<IUserData, SignData>
 ): Promise<string> {
   const { email, password } = data;
   const expiresIn = "3d";
@@ -42,6 +42,8 @@ export async function signIn(
 
   return token;
 }
+
+type SignData = "email" | "password";
 
 const usersService = {
   getAllUsers,

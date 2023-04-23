@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser"; 
-import { connectDb, disconnectDB, loadEnv } from "./config";
+import { connectPrisma, disconnectPrisma, loadEnv } from "./config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { usersRoute } from "./routes";
 
@@ -17,13 +17,13 @@ app
   .use("/users", usersRoute)
   .use(errorHandler);
 
-export function init(): Promise<Express> {
-  connectDb();
+export async function init(): Promise<Express> {
+  connectPrisma();
   return Promise.resolve(app);
 }
 
 export async function close(): Promise<void> {
-  await disconnectDB();
+  await disconnectPrisma();
 }
 
 export default app;
