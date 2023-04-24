@@ -7,7 +7,9 @@ export async function setCookies(
 
   try {
     const token = await usersService.signIn({ email, password });
-    const maxAge = 3 * 24 * 60 * 60 * 1000; 
+    const maxAge = 3 * 24 * 60 * 60 * 1000;
+
+    console.log("Token from setCookies: ", token);
 
     response.cookie("token", token, { httpOnly: true, maxAge });
     next();

@@ -2,9 +2,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { duplicatedUserError } from "@/errors/duplicatedUser.errors";
-import usersRepository from "@/repositories/users";
 import { IUserData } from "@/schemas";
 import { userNotFoundError } from "@/errors/notFound.errors";
+import usersRepository from "@/repositories/users";
+import { alreadyFollowing } from "@/errors/alreadyFollowing.errors";
+import { notFollowing } from "@/errors/notFollowing.errors";
 
 dotenv.config();
 
@@ -31,7 +33,7 @@ export async function signIn(
 ): Promise<string> {
   const { email, password } = data;
   const expiresIn = "3d";
-  const key = process.env.JWT_KEY || "key";
+  const key = process.env.JWT_SECRET || "secret";
 
   const user = await usersRepository.findUnique(email);
   const passwordIsValid = user && await bcrypt.compare(password, user.password);
@@ -43,12 +45,38 @@ export async function signIn(
   return token;
 }
 
+export async function createOrDestroyRelashionship({
+  idFromFollowed, idFromFollower, follow
+}: IRelashionshipDTO): Promise<void> {
+  const usersFolloweds = await usersRepository.findFolloweds(idFromFollower);
+  const isFollowing = usersFolloweds.includes(idFromFollowed);
+
+  if (follow && isFollowing) {
+    throw alreadyFollowing();
+  } else if (!follow && !isFollowing) {
+    throw notFollowing();
+  }
+
+  await usersRepository.createOrDestroyRelashionship({
+    idFromFollowed,
+    idFromFollower,
+    follow
+  });
+}
+
 type SignData = "email" | "password";
+
+export interface IRelashionshipDTO {
+  follow: boolean;
+  idFromFollowed: number,
+  idFromFollower: number
+}
 
 const usersService = {
   getAllUsers,
   signUp,
-  signIn
+  signIn,
+  createOrDestroyRelashionship
 };
 
 export default usersService;

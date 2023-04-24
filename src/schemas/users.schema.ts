@@ -32,3 +32,11 @@ export const signInSchema = Joi.object({
     .required(),
   password: Joi.string().trim().min(1).required(),
 });
+
+export const relashionshipSchema = Joi.object({
+  follow: Joi
+    .boolean()
+    .error(() => new Error("Value must be an boolean"))
+    .required(),
+  idFromFollowed: Joi.number().required(),
+});

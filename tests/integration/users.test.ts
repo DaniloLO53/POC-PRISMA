@@ -29,8 +29,12 @@ describe("CRUD on users", () => {
   beforeAll(async () => {
     await init();
   });
-  
+
   beforeEach(async () => {
+    await cleanDb();
+  });
+  
+  afterEach(async () => {
     await cleanDb();
     await close();
   });

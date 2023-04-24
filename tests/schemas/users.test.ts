@@ -12,17 +12,6 @@ beforeAll(async () => {
 const server = supertest(app);
 
 describe("Schema from data user", () => {
-  const generalInvalidTypes = [
-    "",
-    42,
-    { name: "hello" },
-    null,
-    undefined,
-    true,
-    false,
-    new Date("29-05-1995")
-  ];
-
   const generateValidUserData = () => ({
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
@@ -66,8 +55,10 @@ describe("Schema from data user", () => {
 
     for (const email of invalidEmails) {
       const data = { ...validData, email };
-      const response = await server.post("/users/sign-up").send(data);
-      expect(response.status).toBe(expectedCode);
+      const responseFromSignup = await server.post("/users/sign-up").send(data);
+      const responseFromSignin = await server.post("/users/sign-in").send(data);
+      expect(responseFromSignup.status).toBe(expectedCode);
+      expect(responseFromSignin.status).toBe(expectedCode);
     }
   });
 });
