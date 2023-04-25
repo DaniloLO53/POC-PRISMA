@@ -64,6 +64,7 @@ model Post {
   ratings    PostRating[]
   comments   Comment[]
   events     EventPost[]
+  movie_imdb String
 }
 
 model Comment {
