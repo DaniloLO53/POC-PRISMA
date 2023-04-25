@@ -36,10 +36,11 @@ model Picture {
   content Bytes
 }
 
-model PostImage {
+model PostImages {
   id      Int   @id @default(autoincrement())
   content Bytes
-  post    Post?
+  post_id Int
+  post    Post  @relation(fields: [post_id], references: [id])
 }
 
 model PostRating {
@@ -59,8 +60,7 @@ model Post {
   author_id  Int
   created_at DateTime     @default(now())
   updated_at DateTime     @updatedAt
-  image      PostImage    @relation(fields: [image_id], references: [id])
-  image_id   Int          @unique
+  images     PostImages[]
   ratings    PostRating[]
   comments   Comment[]
   events     EventPost[]
