@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import { faker } from "@faker-js/faker";
-import { cleanDb } from "../helpers";
+import { User } from "@prisma/client";
+import { cleanDb, generateValidToken } from "../helpers";
 import { mockCreateUser } from "../factories";
 import app, { close, init } from "@/app";
 import usersRepository from "@/repositories/users";
@@ -104,6 +105,66 @@ describe("CRUD on users", () => {
 
       expect(resultWithInvalidEmail.status).toBe(expectedCode);
       expect(resultWithInvalidPassword.status).toBe(expectedCode);
+    });
+  });
+
+  describe("Followings", () => {
+    const userData1 = createUserData();
+    const userData2 = createUserData();
+
+    it("should return 201 when user is followed successfully", async () => {
+      await mockCreateUser(userData1);
+      const user2 = await mockCreateUser(userData2);
+
+      const expectedCode = 201;
+      const token = await generateValidToken(user2);
+
+      const { id } = await usersRepository.findUnique(userData2.email) as User;
+
+      const result = await server
+        .post("/users/relashionship")
+        .set({ "Authorization": token })
+        .send({ follow: true, idFromFollowed: id });
+  
+      expect(result.status).toBe(expectedCode);
+    });
+
+    it("should return 409 when user is already followed", async () => {
+      await mockCreateUser(userData1);
+      const user2 = await mockCreateUser(userData2);
+
+      const expectedCode = 409;
+      const token = await generateValidToken(user2);
+
+      const { id } = await usersRepository.findUnique(userData2.email) as User;
+
+      await server
+        .post("/users/relashionship")
+        .set({ "Authorization": token })
+        .send({ follow: true, idFromFollowed: id });
+      const result = await server
+        .post("/users/relashionship")
+        .set({ "Authorization": token })
+        .send({ follow: true, idFromFollowed: id });
+  
+      expect(result.status).toBe(expectedCode);
+    });
+
+    it("should return 409 when user is already unfollowed", async () => {
+      await mockCreateUser(userData1);
+      const user2 = await mockCreateUser(userData2);
+
+      const expectedCode = 409;
+      const token = await generateValidToken(user2);
+
+      const { id } = await usersRepository.findUnique(userData2.email) as User;
+
+      const result = await server
+        .post("/users/relashionship")
+        .set({ "Authorization": token })
+        .send({ follow: false, idFromFollowed: id });
+  
+      expect(result.status).toBe(expectedCode);
     });
   });
 });

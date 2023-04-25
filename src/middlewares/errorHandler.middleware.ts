@@ -14,7 +14,6 @@ export function errorHandler(
 
   console.log("Error name: ", error.name);
   console.log("Error message: ", error.message);
-  console.log("Error body: ", error);
 
   return response.status(error.statusCode || ServerErrors.INTERNAL_SERVER_ERROR).send({
     message: error.message,

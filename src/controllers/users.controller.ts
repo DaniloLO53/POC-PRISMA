@@ -24,7 +24,7 @@ export async function createOrDestroyRelashionship(
 ) {
   const { follow, idFromFollowed } = request.body;
   const { userId: idFromFollower } = request;
-  
+
   try {
     await usersService.createOrDestroyRelashionship({
       follow,
