@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { cleanDb, generateValidToken } from "../helpers";
 import { mockCreateUser } from "../factories";
 import app, { close, init } from "@/app";
-
+import { prisma } from "@/config";
 
 const server = supertest(app);
 
@@ -140,6 +140,10 @@ describe("User's posts", () => {
     const user1 = await mockCreateUser(userData1);
 
     const token1 = await generateValidToken(user1);
+    const dataToUpdate = {
+      content: faker.lorem.text(),
+      movie_imdb: "tt1234567"
+    };
 
     const resultPost = await server
       .post("/posts")
@@ -151,12 +155,10 @@ describe("User's posts", () => {
     const resultUpdate = await server
       .put(`/posts/${String(resultPost.body.id)}`)
       .set({ "Authorization": token1 })
-      .send({
-        content: faker.lorem.text(),
-        movie_imdb: "tt1234567"
-      });
+      .send(dataToUpdate);
 
     expect(resultUpdate.statusCode).toBe(expectedCode);
+    expect(resultUpdate.body).toMatchObject(dataToUpdate);
   });
 
   it("should return return 201 when post is created", async () => {
@@ -165,16 +167,18 @@ describe("User's posts", () => {
     const user1 = await mockCreateUser(userData1);
 
     const token1 = await generateValidToken(user1);
+    const dataSent = {
+      content: faker.lorem.text(),
+      movie_imdb: "tt1234567"
+    };
 
     const resultPost = await server
       .post("/posts")
       .set({ "Authorization": token1 })
-      .send({
-        content: faker.lorem.text(),
-        movie_imdb: "tt1234567"
-      });
+      .send(dataSent);
 
     expect(resultPost.statusCode).toBe(expectedCode);
+    expect(resultPost.body).toMatchObject(dataSent);
   });
 
   it("should return return 409 when post rated not found", async () => {
@@ -248,8 +252,22 @@ describe("User's posts", () => {
         type: "DISLIKE",
         post_id: resultPost.body.id
       });
+    const likesCount = await prisma.postRating.count({
+      where: {
+        post_id: resultPost.body.id,
+        type: "LIKE"
+      }
+    });
+    const dislikesCount = await prisma.postRating.count({
+      where: {
+        post_id: resultPost.body.id,
+        type: "DISLIKE"
+      }
+    });
 
     expect(resultRating1.statusCode).toBe(expectedCode);
     expect(resultRating2.statusCode).toBe(expectedCode);
+    expect(dislikesCount).toBe(1);
+    expect(likesCount).toBe(1);
   });
 });
