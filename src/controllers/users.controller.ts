@@ -38,10 +38,19 @@ export async function createOrDestroyRelashionship(
   }
 }
 
+export function setCookies(token: string, response: Response) {
+  const maxAge = 3 * 24 * 60 * 60 * 1000;
+
+  response.cookie("token", token, { httpOnly: true, maxAge });
+}
+
 export async function signIn(request: Request, response: Response, next: NextFunction) {
-  const { token } = request.cookies;
+  const { email, password } = request.body;
 
   try {
+    const token = await usersService.signIn({ email, password });
+    setCookies(token, response);
+
     return response.status(Successful.CREATED).send({ token });
   } catch (error) {
     next(error);

@@ -29,18 +29,17 @@ export async function signUp(data: IUserData): Promise<void> {
 }
 
 export async function signIn(
-  data: Pick<IUserData, SignData>
+  userData: Pick<IUserData, SignInData>
 ): Promise<string> {
-  const { email, password } = data;
+  const secret = process.env.JWT_SECRET || "secret";
   const expiresIn = "3d";
-  const key = process.env.JWT_SECRET || "secret";
 
-  const user = await usersRepository.findUnique(email);
-  const passwordIsValid = user && await bcrypt.compare(password, user.password);
+  const user = await usersRepository.findUnique(userData.email);
+  const passwordIsValid = user && await bcrypt.compare(userData.password, user.password);
 
   if (!user || !passwordIsValid) throw userNotFoundError();
 
-  const token = jwt.sign({ user }, key, { expiresIn });
+  const token = jwt.sign({ user }, secret, { expiresIn });
 
   return token;
 }
@@ -64,7 +63,7 @@ export async function createOrDestroyRelashionship({
   });
 }
 
-type SignData = "email" | "password";
+type SignInData = "email" | "password";
 
 export interface IRelashionshipDTO {
   follow: boolean;
