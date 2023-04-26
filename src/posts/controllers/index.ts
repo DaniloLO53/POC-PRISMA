@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Successful } from "@/utils/statusCodes/successful";
 import { AuthenticatedRequest } from "@/middlewares/authentication.middleware";
-import postsService from "@/services/posts";
+import postsService from "@/posts/services";
 
 export async function getAllPosts(
   request: Request,

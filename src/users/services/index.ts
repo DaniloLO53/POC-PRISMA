@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { IRelashionshipDTO, SignInData } from "./interfaces";
 import { duplicatedUserError } from "@/errors/duplicatedUser.errors";
-import { IUserData } from "@/schemas";
+import { IUserData } from "@/users/schemas";
 import { userNotFoundError } from "@/errors/notFound.errors";
-import usersRepository from "@/repositories/users";
+import usersRepository from "@/users/repositories";
 import { alreadyFollowing } from "@/errors/alreadyFollowing.errors";
 import { notFollowing } from "@/errors/notFollowing.errors";
 
@@ -61,14 +62,6 @@ export async function createOrDestroyRelashionship({
     idFromFollower,
     follow
   });
-}
-
-type SignInData = "email" | "password";
-
-export interface IRelashionshipDTO {
-  follow: boolean;
-  idFromFollowed: number,
-  idFromFollower: number
 }
 
 const usersService = {

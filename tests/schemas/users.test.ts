@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import { cleanDb } from "../helpers";
 import app, { init } from "@/app";
-import { IUserData } from "@/schemas";
+import { IUserData } from "@/users/schemas";
 
 beforeAll(async () => {
   await init();

@@ -4,7 +4,7 @@ import { User } from "@prisma/client";
 import { cleanDb, generateValidToken } from "../helpers";
 import { mockCreateUser } from "../factories";
 import app, { close, init } from "@/app";
-import usersRepository from "@/repositories/users";
+import usersRepository from "@/users/repositories";
 
 
 

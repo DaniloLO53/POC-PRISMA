@@ -3,7 +3,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser"; 
 import { connectPrisma, disconnectPrisma, loadEnv } from "./config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-import { postsRoute, usersRoute } from "./routes";
+import { postsRoute } from "./posts/routes";
+import { usersRoute } from "./users/routes";
 
 loadEnv();
 

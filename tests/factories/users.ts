@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { IUserData } from "@/schemas";
+import { IUserData } from "@/users/schemas";
 import { prisma } from "@/config";
 
 export async function mockCreateUser(userData: IUserData): Promise<User> {

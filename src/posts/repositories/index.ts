@@ -1,21 +1,17 @@
 import { Post, PostRating } from "@prisma/client";
 import { prisma } from "@/config";
-import { IPostDTO, IPostRateDTO, IPostUpdateDTO } from "@/services";
+import { IPostDTO, IPostRateDTO, IPostUpdateDTO } from "@/posts/services/interfaces";
 
 async function findAll() {
-  const posts = await prisma.post.findMany();
-
-  return posts;
+  return await prisma.post.findMany();
 }
 
 async function findPostById(postId: string) {
-  const posts = await prisma.post.findUnique({
+  return await prisma.post.findUnique({
     where: {
       id: Number(postId)
     }
   });
-
-  return posts;
 }
 
 async function createPost({

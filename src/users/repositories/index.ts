@@ -1,6 +1,6 @@
 import { prisma } from "@/config";
-import { IUserData } from "@/schemas";
-import { IRelashionshipDTO } from "@/services";
+import { IUserData } from "@/users/schemas";
+import { IRelashionshipDTO } from "@/users/services/interfaces";
 
 async function findAll() {
   const users = await prisma.user.findMany();

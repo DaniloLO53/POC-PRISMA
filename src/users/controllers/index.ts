@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Successful } from "@/utils/statusCodes/successful";
-import usersService from "@/services/users";
+import usersService from "@/users/services";
 import { AuthenticatedRequest } from "@/middlewares/authentication.middleware";
 
 export async function getAllUsers(

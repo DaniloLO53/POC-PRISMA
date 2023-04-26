@@ -5,7 +5,8 @@ import { mockCreateUser } from "../factories";
 import app, { close, init } from "@/app";
 import { prisma } from "@/config";
 
-const server = supertest(app);
+type ServerType = supertest.SuperTest<supertest.Test>; 
+const server: ServerType= supertest(app);
 
 describe("User's posts", () => {
   const createUserData = () => {

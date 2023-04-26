@@ -3,8 +3,8 @@ import bcrypt from "bcrypt";
 import { User } from "@prisma/client";
 import { mockCreateUser } from "../factories";
 import { cleanDb } from "../helpers";
-import usersService  from "@/services/users";
-import { IUserData } from "@/schemas";
+import usersService  from "@/users/services";
+import { IUserData } from "@/users/schemas";
 import { init } from "@/app";
 import { prisma } from "@/config";
 
