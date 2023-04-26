@@ -2,7 +2,14 @@ import express from "express";
 import { validateBody, validateParams } from "@/middlewares/schemaValidation.middleware";
 import { authenticateToken } from "@/middlewares/authentication.middleware";
 import { postIdSchema, postSchema } from "@/schemas/posts.schema";
-import { createPost, updatePost, getAllPosts, getPost } from "@/controllers";
+import {
+  createPost,
+  updatePost,
+  getAllPosts,
+  getPost,
+  ratePost
+} from "@/controllers";
+import { postRatingSchema } from "@/schemas/postRatings.schema";
 
 const postsRoute = express.Router();
 
@@ -16,6 +23,11 @@ postsRoute.put("/:postId",
   validateParams(postIdSchema),
   authenticateToken,
   updatePost
+);
+postsRoute.post("/rating",
+  validateBody(postRatingSchema),
+  authenticateToken,
+  ratePost
 );
 
 postsRoute.get("/", getAllPosts);

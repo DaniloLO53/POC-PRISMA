@@ -33,7 +33,7 @@ describe("User's posts", () => {
     await close();
   });
 
-  it("should return return 401 whe token is invalidm not setted", async () => {
+  it("should return return 401 whe token is invalid or not setted", async () => {
     const expectedCode = 401;
     const userData = createUserData();
     await mockCreateUser(userData);
@@ -175,5 +175,81 @@ describe("User's posts", () => {
       });
 
     expect(resultPost.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 409 when post rated not found", async () => {
+    const expectedCode = 409;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultRating = await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        post_id: faker.random.numeric()
+      });
+
+    expect(resultRating.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 422 when invalid post rated data", async () => {
+    const expectedCode = 422;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultRating = await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: faker.lorem.word(),
+        post_id: resultPost.body.id
+      });
+
+    expect(resultRating.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 201 when post is rated", async () => {
+    const expectedCode = 201;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultRating1 = await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        post_id: resultPost.body.id
+      });
+    const resultRating2 = await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "DISLIKE",
+        post_id: resultPost.body.id
+      });
+
+    expect(resultRating1.statusCode).toBe(expectedCode);
+    expect(resultRating2.statusCode).toBe(expectedCode);
   });
 });

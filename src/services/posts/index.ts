@@ -1,4 +1,4 @@
-import { Post } from "@prisma/client";
+import { Post, PostRating } from "@prisma/client";
 import { cannotModifyError } from "@/errors/cannotModifyError.errors";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
 import postsRepository from "@/repositories/posts";
@@ -40,6 +40,20 @@ export async function updatePost({
   });
 }
 
+export async function ratePost({
+  post_id, author_id, type
+}: IPostRateDTO): Promise<PostRating> {
+  const post = await postsRepository.findPostById(post_id);
+
+  if (!post) throw postNotFoundError();
+
+  return await postsRepository.ratePost({
+    author_id,
+    type,
+    post_id
+  });
+}
+
 export interface IPostDTO {
   content: string;
   author_id: number,
@@ -50,9 +64,16 @@ export interface IPostUpdateDTO extends IPostDTO {
   postId: string,
 }
 
+export interface IPostRateDTO {
+  type: "LIKE" | "DISLIKE";
+  author_id: number,
+  post_id: string
+}
+
 const postsService = {
   createPost,
   updatePost,
+  ratePost,
   getAllPosts,
   getPost
 };

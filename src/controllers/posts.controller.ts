@@ -77,4 +77,25 @@ export async function updatePost(
   }
 }
 
+export async function ratePost(
+  request: AuthenticatedRequest,
+  response: Response,
+  next: NextFunction
+) {
+  const { type, post_id } = request.body;
+  const { userId: author_id } = request;
+
+  try {
+    await postsService.ratePost({
+      type,
+      post_id,
+      author_id,
+    });
+
+    return response.sendStatus(Successful.CREATED);
+  } catch (error) {
+    next(error);
+  }
+}
+
 
