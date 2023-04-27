@@ -58,15 +58,12 @@ export async function ratePost({
 export async function comment({
   post_id, comment_id, author_id, content
 }: ICommentDTO): Promise<Comment> {
-  let postOrComment;
+  let comment;
 
-  if (comment_id) {
-    postOrComment = await postsRepository.findCommentById(comment_id);
-  } else {
-    postOrComment = await postsRepository.findPostById(post_id);
-  }
+  comment_id && (comment = await postsRepository.findCommentById(comment_id));
+  const post = await postsRepository.findPostById(post_id);
 
-  if (!postOrComment) throw postNotFoundError();
+  if (!post || (!comment && comment_id)) throw postNotFoundError();
 
   return await postsRepository.comment({
     author_id,

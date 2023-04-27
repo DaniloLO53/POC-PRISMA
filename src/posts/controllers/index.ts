@@ -107,14 +107,14 @@ export async function comment(
   const { userId: author_id } = request;
 
   try {
-    await postsService.comment({
+    const comment = await postsService.comment({
       content,
       post_id,
       comment_id,
       author_id,
     });
 
-    return response.sendStatus(Successful.CREATED);
+    return response.status(Successful.CREATED).send(comment);
   } catch (error) {
     next(error);
   }

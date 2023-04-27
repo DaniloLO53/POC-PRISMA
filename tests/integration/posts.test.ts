@@ -329,6 +329,7 @@ describe("User's posts", () => {
         content: faker.lorem.text(),
         movie_imdb: "tt1234567"
       });
+    
     const resultComment = await server
       .post("/posts/comments")
       .set({ "Authorization": token1 })
@@ -336,6 +337,7 @@ describe("User's posts", () => {
         content: faker.lorem.paragraphs(),
         post_id: resultPost.body.id
       });
+
     const commentsCount = await prisma.comment.count({
       where: {
         post_id: resultPost.body.id,
@@ -344,5 +346,53 @@ describe("User's posts", () => {
 
     expect(resultComment.statusCode).toBe(expectedCode);
     expect(commentsCount).toBe(1);
+  });
+
+  it("should return return 201 when comment is commented", async () => {
+    const expectedCode = 201;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id,
+        comment_id: resultComment.body.id
+      });
+    
+    const postCommentsCount = await prisma.comment.count({
+      where: {
+        post_id: resultPost.body.id,
+      }
+    });
+    const commentsToCommentCount = await prisma.comment.count({
+      where: {
+        post_id: resultPost.body.id,
+        comment_id: resultComment.body.id
+      }
+    });
+
+    expect(resultComment.statusCode).toBe(expectedCode);
+    expect(postCommentsCount).toBe(2);
+    expect(commentsToCommentCount).toBe(1);
   });
 });
