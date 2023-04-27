@@ -1,4 +1,4 @@
-import { ICustomError } from "./ICustomError";
+import { ICustomError } from "../middlewares/ICustomError";
 import { MessagesErrors } from "@/utils/messages/errors.messages";
 import { ServerErrors } from "@/utils/statusCodes/serverErrors";
 

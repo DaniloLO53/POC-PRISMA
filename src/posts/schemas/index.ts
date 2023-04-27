@@ -15,3 +15,8 @@ export const postRatingSchema = Joi.object(({
   post_id: Joi.number().required(),
   type: Joi.valid("LIKE", "DISLIKE").required()
 }));
+
+export const postCommentSchema = Joi.object(({
+  post_id: Joi.number().required(),
+  content: Joi.string().trim().min(1).required()
+}));

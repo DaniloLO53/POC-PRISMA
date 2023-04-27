@@ -271,4 +271,78 @@ describe("User's posts", () => {
     expect(dislikesCount).toBe(1);
     expect(likesCount).toBe(1);
   });
+
+  it("should return return 409 when post to be commented is not found", async () => {
+    const expectedCode = 409;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultComment = await server
+      .post("/posts/comment")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: faker.random.numeric()
+      });
+
+    expect(resultComment.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 422 when invalid post comment data", async () => {
+    const expectedCode = 422;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comment")
+      .set({ "Authorization": token1 })
+      .send({
+        content: 42,
+        post_id: resultPost.body.id
+      });
+
+    expect(resultComment.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 201 when post is commented", async () => {
+    const expectedCode = 201;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comment")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const commentsCount = await prisma.comment.count({
+      where: {
+        post_id: resultPost.body.id,
+      }
+    });
+
+    expect(resultComment.statusCode).toBe(expectedCode);
+    expect(commentsCount).toBe(1);
+  });
 });

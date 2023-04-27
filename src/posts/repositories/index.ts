@@ -1,6 +1,11 @@
-import { Post, PostRating } from "@prisma/client";
+import { Comment, Post, PostRating } from "@prisma/client";
 import { prisma } from "@/config";
-import { IPostDTO, IPostRateDTO, IPostUpdateDTO } from "@/posts/services/interfaces";
+import {
+  IPostCommentDTO,
+  IPostDTO,
+  IPostRateDTO,
+  IPostUpdateDTO
+} from "@/posts/services/interfaces";
 
 async function findAll() {
   return await prisma.post.findMany();
@@ -52,8 +57,21 @@ async function ratePost({
   });
 }
 
+async function commentPost({
+  post_id, author_id, content
+}: IPostCommentDTO): Promise<Comment> {
+  return await prisma.comment.create({
+    data: {
+      author_id,
+      post_id: Number(post_id),
+      content,
+    }
+  });
+}
+
 const postsRepository = {
   createPost,
+  commentPost,
   ratePost,
   findAll,
   findPostById,

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ICustomError } from "@/errors/ICustomError";
+import { ICustomError } from "@/middlewares/ICustomError";
 import { ServerErrors } from "@/utils/statusCodes/serverErrors";
 import { ClientErrors } from "@/utils/statusCodes/clientErrors";
 

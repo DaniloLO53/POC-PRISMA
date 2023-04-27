@@ -98,4 +98,23 @@ export async function ratePost(
   }
 }
 
+export async function commentPost(
+  request: AuthenticatedRequest,
+  response: Response,
+  next: NextFunction
+) {
+  const { content, post_id } = request.body;
+  const { userId: author_id } = request;
 
+  try {
+    await postsService.commentPost({
+      content,
+      post_id,
+      author_id,
+    });
+
+    return response.sendStatus(Successful.CREATED);
+  } catch (error) {
+    next(error);
+  }
+}
