@@ -5,7 +5,7 @@ import {
   postIdSchema,
   postSchema,
   postRatingSchema,
-  postCommentSchema
+  commentSchema
 } from "@/posts/schemas";
 import {
   createPost,
@@ -13,7 +13,7 @@ import {
   getAllPosts,
   getPost,
   ratePost,
-  commentPost
+  comment
 } from "@/posts/controllers";
 
 const postsRoute = express.Router();
@@ -34,11 +34,16 @@ postsRoute.post("/rating",
   authenticateToken,
   ratePost
 );
-postsRoute.post("/comment",
-  validateBody(postCommentSchema),
+postsRoute.post("/comments",
+  validateBody(commentSchema),
   authenticateToken,
-  commentPost
+  comment
 );
+// postsRoute.post("/comments",
+//   validateBody(commentSchema),
+//   authenticateToken,
+//   updatePost
+// );
 
 postsRoute.get("/", getAllPosts);
 postsRoute.get("/:postId", getPost);

@@ -98,18 +98,19 @@ export async function ratePost(
   }
 }
 
-export async function commentPost(
+export async function comment(
   request: AuthenticatedRequest,
   response: Response,
   next: NextFunction
 ) {
-  const { content, post_id } = request.body;
+  const { content, post_id, comment_id } = request.body;
   const { userId: author_id } = request;
 
   try {
-    await postsService.commentPost({
+    await postsService.comment({
       content,
       post_id,
+      comment_id,
       author_id,
     });
 

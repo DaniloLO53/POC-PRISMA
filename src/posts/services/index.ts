@@ -1,5 +1,5 @@
 import { Comment, Post, PostRating } from "@prisma/client";
-import { IPostCommentDTO, IPostDTO, IPostRateDTO, IPostUpdateDTO } from "./interfaces";
+import { ICommentDTO, IPostDTO, IPostRateDTO, IPostUpdateDTO } from "./interfaces";
 import { cannotModifyError } from "@/errors/cannotModifyError.errors";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
 import postsRepository from "@/posts/repositories";
@@ -55,23 +55,30 @@ export async function ratePost({
   });
 }
 
-export async function commentPost({
-  post_id, author_id, content
-}: IPostCommentDTO): Promise<Comment> {
-  const post = await postsRepository.findPostById(post_id);
+export async function comment({
+  post_id, comment_id, author_id, content
+}: ICommentDTO): Promise<Comment> {
+  let postOrComment;
 
-  if (!post) throw postNotFoundError();
+  if (comment_id) {
+    postOrComment = await postsRepository.findCommentById(comment_id);
+  } else {
+    postOrComment = await postsRepository.findPostById(post_id);
+  }
 
-  return await postsRepository.commentPost({
+  if (!postOrComment) throw postNotFoundError();
+
+  return await postsRepository.comment({
     author_id,
     content,
-    post_id
+    post_id,
+    comment_id
   });
 }
 
 const postsService = {
   createPost,
-  commentPost,
+  comment,
   updatePost,
   ratePost,
   getAllPosts,

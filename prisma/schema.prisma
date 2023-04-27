@@ -74,6 +74,9 @@ model Comment {
   post_id    Int
   author     User               @relation(fields: [author_id], references: [id], onDelete: Cascade)
   author_id  Int
+  comment    Comment?           @relation(fields: [comment_id], references: [id], name: "comment")
+  comment_id Int?
+  comments   Comment[]          @relation(name: "comment")
   ratings    CommentRating[]
   events     EventPostComment[]
   content    String

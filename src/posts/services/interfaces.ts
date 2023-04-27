@@ -14,8 +14,9 @@ export interface IPostRateDTO {
   post_id: string
 }
 
-export interface IPostCommentDTO {
+export interface ICommentDTO {
   author_id: number,
   content: string,
-  post_id: string
+  post_id: string,
+  comment_id?: number
 }

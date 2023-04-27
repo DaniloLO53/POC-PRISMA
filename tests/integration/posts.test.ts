@@ -280,7 +280,7 @@ describe("User's posts", () => {
     const token1 = await generateValidToken(user1);
 
     const resultComment = await server
-      .post("/posts/comment")
+      .post("/posts/comments")
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
@@ -305,7 +305,7 @@ describe("User's posts", () => {
         movie_imdb: "tt1234567"
       });
     const resultComment = await server
-      .post("/posts/comment")
+      .post("/posts/comments")
       .set({ "Authorization": token1 })
       .send({
         content: 42,
@@ -330,7 +330,7 @@ describe("User's posts", () => {
         movie_imdb: "tt1234567"
       });
     const resultComment = await server
-      .post("/posts/comment")
+      .post("/posts/comments")
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),

@@ -1,7 +1,7 @@
 import { Comment, Post, PostRating } from "@prisma/client";
 import { prisma } from "@/config";
 import {
-  IPostCommentDTO,
+  ICommentDTO,
   IPostDTO,
   IPostRateDTO,
   IPostUpdateDTO
@@ -15,6 +15,14 @@ async function findPostById(postId: string) {
   return await prisma.post.findUnique({
     where: {
       id: Number(postId)
+    }
+  });
+}
+
+async function findCommentById(commentId: number) {
+  return await prisma.comment.findUnique({
+    where: {
+      id: Number(commentId)
     }
   });
 }
@@ -57,13 +65,14 @@ async function ratePost({
   });
 }
 
-async function commentPost({
-  post_id, author_id, content
-}: IPostCommentDTO): Promise<Comment> {
+async function comment({
+  post_id, comment_id, author_id, content
+}: ICommentDTO): Promise<Comment> {
   return await prisma.comment.create({
     data: {
       author_id,
       post_id: Number(post_id),
+      comment_id: comment_id ? comment_id : null,
       content,
     }
   });
@@ -71,10 +80,11 @@ async function commentPost({
 
 const postsRepository = {
   createPost,
-  commentPost,
+  comment,
   ratePost,
   findAll,
   findPostById,
+  findCommentById,
   updatePost
 };
 
