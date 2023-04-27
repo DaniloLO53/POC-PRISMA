@@ -491,4 +491,160 @@ describe("User's posts", () => {
 
     expect(resultCommentUpdate.statusCode).toBe(expectedCode);
   });
+
+  it("should return return 401 when trying to delete comment from others", async () => {
+    const expectedCode = 401;
+    const userData1 = createUserData();
+    const userData2 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+    const user2 = await mockCreateUser(userData2);
+
+    const token1 = await generateValidToken(user1);
+    const token2 = await generateValidToken(user2);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultCommentDelete = await server
+      .delete(`/posts/comments/${resultComment.body.id}`)
+      .set({ "Authorization": token2 })
+      .send({
+        content: faker.lorem.paragraphs(),
+      });
+
+    expect(resultCommentDelete.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 409 when comment to delete is not found", async () => {
+    const expectedCode = 409;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultCommentDelete = await server
+      .delete(`/posts/comments/${faker.random.numeric()}`)
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+      });
+
+    expect(resultCommentDelete.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 201 when comment is deleted", async () => {
+    const expectedCode = 201;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultCommentDelete = await server
+      .delete(`/posts/comments/${resultComment.body.id}`)
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+      });
+    const commentCount = await prisma.comment.count({
+      where: {
+        id: resultComment.body.id
+      }
+    });
+
+    expect(resultCommentDelete.statusCode).toBe(expectedCode);
+    expect(commentCount).toBe(0);
+  });
+
+  it("should return return 201 when comment is rated", async () => {
+    const expectedCode = 201;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultRating1 = await server
+      .post("/posts/comments/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        comment_id: resultComment.body.id
+      });
+    const resultRating2 = await server
+      .post("/posts/comments/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "DISLIKE",
+        comment_id: resultComment.body.id
+      });
+    const likesCount = await prisma.commentRating.count({
+      where: {
+        comment_id: resultComment.body.id,
+        type: "LIKE"
+      }
+    });
+    const dislikesCount = await prisma.commentRating.count({
+      where: {
+        comment_id: resultComment.body.id,
+        type: "DISLIKE"
+      }
+    });
+
+    expect(resultRating1.statusCode).toBe(expectedCode);
+    expect(resultRating2.statusCode).toBe(expectedCode);
+    expect(dislikesCount).toBe(1);
+    expect(likesCount).toBe(1);
+  });
 });

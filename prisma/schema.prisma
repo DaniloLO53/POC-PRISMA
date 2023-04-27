@@ -74,7 +74,7 @@ model Comment {
   post_id    Int
   author     User               @relation(fields: [author_id], references: [id], onDelete: Cascade)
   author_id  Int
-  comment    Comment?           @relation(fields: [comment_id], references: [id], name: "comment")
+  comment    Comment?           @relation(fields: [comment_id], references: [id], name: "comment", onDelete: Cascade)
   comment_id Int?
   comments   Comment[]          @relation(name: "comment")
   ratings    CommentRating[]
@@ -86,10 +86,11 @@ model Comment {
 
 model CommentRating {
   id         Int      @id @default(autoincrement())
-  comment    Comment  @relation(fields: [comment_id], references: [id])
+  comment    Comment  @relation(fields: [comment_id], references: [id], onDelete: Cascade)
   comment_id Int
   author     User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
   author_id  Int
+  type       Rating   @default(LIKE)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
@@ -119,9 +120,9 @@ model EventPost {
 }
 
 model Relationship {
-  user_followed  User @relation(fields: [followed], references: [id], name: "followed")
+  user_followed  User @relation(fields: [followed], references: [id], name: "followed", onDelete: Cascade)
   followed       Int
-  user_following User @relation(fields: [following], references: [id], name: "following")
+  user_following User @relation(fields: [following], references: [id], name: "following", onDelete: Cascade)
   following      Int
 
   @@unique([followed, following])

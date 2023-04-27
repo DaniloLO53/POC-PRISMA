@@ -6,6 +6,9 @@ import { prisma } from "@/config";
 dotenv.config();
 
 export async function cleanDb() {
+  await prisma.commentRating.deleteMany({});
+  await prisma.comment.deleteMany({});
+  await prisma.postRating.deleteMany({});
   await prisma.post.deleteMany({});
   await prisma.relationship.deleteMany({});
   await prisma.user.deleteMany({});

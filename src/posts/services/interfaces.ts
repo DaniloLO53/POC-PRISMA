@@ -21,6 +21,12 @@ export interface ICommentDTO {
   comment_id?: number
 }
 
+export interface ICommentRateDTO {
+  type: "LIKE" | "DISLIKE";
+  author_id: number,
+  comment_id: string
+}
+
 export interface ICommentUpdateDTO extends Omit<ICommentDTO, "comment_id" | "post_id"> {
   commentId: string,
 }

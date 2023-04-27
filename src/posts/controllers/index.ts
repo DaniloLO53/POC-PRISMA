@@ -120,6 +120,27 @@ export async function comment(
   }
 }
 
+export async function rateComment(
+  request: AuthenticatedRequest,
+  response: Response,
+  next: NextFunction
+) {
+  const { type, comment_id } = request.body;
+  const { userId: author_id } = request;
+
+  try {
+    await postsService.rateComment({
+      type,
+      comment_id,
+      author_id,
+    });
+
+    return response.sendStatus(Successful.CREATED);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function updateComment(
   request: AuthenticatedRequest,
   response: Response,
@@ -137,6 +158,26 @@ export async function updateComment(
     });
 
     return response.status(Successful.CREATED).send(comment);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteComment(
+  request: AuthenticatedRequest,
+  response: Response,
+  next: NextFunction
+) {
+  const { commentId } = request.params;
+  const { userId: author_id } = request;
+
+  try {
+    await postsService.deleteComment({
+      author_id,
+      commentId
+    });
+
+    return response.sendStatus(Successful.CREATED);
   } catch (error) {
     next(error);
   }

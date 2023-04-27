@@ -29,3 +29,8 @@ export const commentUpdateSchema = Joi.object(({
 export const commentIdSchema = Joi.object(({
   commentId: Joi.number().required(),
 }));
+
+export const commentRatingSchema = Joi.object(({
+  comment_id: Joi.number().required(),
+  type: Joi.valid("LIKE", "DISLIKE").required()
+}));

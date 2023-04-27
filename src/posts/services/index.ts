@@ -1,6 +1,7 @@
-import { Comment, Post, PostRating } from "@prisma/client";
+import { Comment, CommentRating, Post, PostRating } from "@prisma/client";
 import {
   ICommentDTO,
+  ICommentRateDTO,
   ICommentUpdateDTO,
   IPostDTO,
   IPostRateDTO,
@@ -93,10 +94,39 @@ export async function updateComment({
   });
 }
 
+export async function deleteComment({
+  author_id, commentId
+}: Omit<ICommentUpdateDTO, "content">): Promise<void> {
+  const comment = await postsRepository.findCommentById(Number(commentId));
+
+  if (!comment) throw postNotFoundError();
+  if (comment.author_id !== author_id) throw cannotModifyError();
+
+  await postsRepository.deleteComment({
+    commentId,
+  });
+}
+
+export async function rateComment({
+  comment_id, author_id, type
+}: ICommentRateDTO): Promise<CommentRating> {
+  const comment = await postsRepository.findCommentById(Number(comment_id));
+
+  if (!comment) throw postNotFoundError();
+
+  return await postsRepository.rateComment({
+    author_id,
+    type,
+    comment_id
+  });
+}
+
 const postsService = {
   createPost,
   comment,
   updateComment,
+  deleteComment,
+  rateComment,
   updatePost,
   ratePost,
   getAllPosts,
