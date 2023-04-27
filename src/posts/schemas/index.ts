@@ -21,3 +21,11 @@ export const commentSchema = Joi.object(({
   comment_id: Joi.number(),
   content: Joi.string().trim().min(1).required()
 }));
+
+export const commentUpdateSchema = Joi.object(({
+  content: Joi.string().trim().min(1).required()
+}));
+
+export const commentIdSchema = Joi.object(({
+  commentId: Joi.number().required(),
+}));

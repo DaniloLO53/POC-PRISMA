@@ -20,3 +20,7 @@ export interface ICommentDTO {
   post_id: string,
   comment_id?: number
 }
+
+export interface ICommentUpdateDTO extends Omit<ICommentDTO, "comment_id" | "post_id"> {
+  commentId: string,
+}

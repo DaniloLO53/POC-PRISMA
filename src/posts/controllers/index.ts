@@ -119,3 +119,25 @@ export async function comment(
     next(error);
   }
 }
+
+export async function updateComment(
+  request: AuthenticatedRequest,
+  response: Response,
+  next: NextFunction
+) {
+  const { content } = request.body;
+  const { commentId } = request.params;
+  const { userId: author_id } = request;
+
+  try {
+    const comment = await postsService.updateComment({
+      content,
+      author_id,
+      commentId
+    });
+
+    return response.status(Successful.CREATED).send(comment);
+  } catch (error) {
+    next(error);
+  }
+}

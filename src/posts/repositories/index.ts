@@ -2,6 +2,7 @@ import { Comment, Post, PostRating } from "@prisma/client";
 import { prisma } from "@/config";
 import {
   ICommentDTO,
+  ICommentUpdateDTO,
   IPostDTO,
   IPostRateDTO,
   IPostUpdateDTO
@@ -78,9 +79,23 @@ async function comment({
   });
 }
 
+async function updateComment({
+  content, commentId
+}: Omit<ICommentUpdateDTO, "author_id">): Promise<Comment> {
+  return await prisma.comment.update({
+    data: {
+      content,
+    },
+    where: {
+      id: Number(commentId)
+    }
+  });
+}
+
 const postsRepository = {
   createPost,
   comment,
+  updateComment,
   ratePost,
   findAll,
   findPostById,

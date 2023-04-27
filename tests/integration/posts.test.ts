@@ -395,4 +395,100 @@ describe("User's posts", () => {
     expect(postCommentsCount).toBe(2);
     expect(commentsToCommentCount).toBe(1);
   });
+
+  it("should return return 401 when trying to update comment from others", async () => {
+    const expectedCode = 401;
+    const userData1 = createUserData();
+    const userData2 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+    const user2 = await mockCreateUser(userData2);
+
+    const token1 = await generateValidToken(user1);
+    const token2 = await generateValidToken(user2);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultCommentUpdate = await server
+      .put(`/posts/comments/${resultComment.body.id}`)
+      .set({ "Authorization": token2 })
+      .send({
+        content: faker.lorem.paragraphs(),
+      });
+
+    expect(resultCommentUpdate.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 409 when post is comment to update is not found", async () => {
+    const expectedCode = 409;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultCommentUpdate = await server
+      .put(`/posts/comments/${faker.random.numeric()}`)
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+      });
+
+    expect(resultCommentUpdate.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return 201 when comment is updated", async () => {
+    const expectedCode = 201;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    const resultCommentUpdate = await server
+      .put(`/posts/comments/${resultComment.body.id}`)
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+      });
+
+    expect(resultCommentUpdate.statusCode).toBe(expectedCode);
+  });
 });

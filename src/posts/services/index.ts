@@ -1,5 +1,11 @@
 import { Comment, Post, PostRating } from "@prisma/client";
-import { ICommentDTO, IPostDTO, IPostRateDTO, IPostUpdateDTO } from "./interfaces";
+import {
+  ICommentDTO,
+  ICommentUpdateDTO,
+  IPostDTO,
+  IPostRateDTO,
+  IPostUpdateDTO
+} from "./interfaces";
 import { cannotModifyError } from "@/errors/cannotModifyError.errors";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
 import postsRepository from "@/posts/repositories";
@@ -73,9 +79,24 @@ export async function comment({
   });
 }
 
+export async function updateComment({
+  content, author_id, commentId
+}: ICommentUpdateDTO): Promise<Comment> {
+  const comment = await postsRepository.findCommentById(Number(commentId));
+
+  if (!comment) throw postNotFoundError();
+  if (comment.author_id !== author_id) throw cannotModifyError();
+
+  return await postsRepository.updateComment({
+    content,
+    commentId,
+  });
+}
+
 const postsService = {
   createPost,
   comment,
+  updateComment,
   updatePost,
   ratePost,
   getAllPosts,
