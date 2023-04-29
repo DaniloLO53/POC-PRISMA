@@ -4,7 +4,6 @@ import { cleanDb, generateValidToken } from "../helpers";
 import { mockCreateUser } from "../factories";
 import app, { close, init } from "@/app";
 import { prisma } from "@/config";
-import { IPostRateDTO } from "@/posts/services/interfaces";
 
 type ServerType = supertest.SuperTest<supertest.Test>; 
 const server: ServerType= supertest(app);
