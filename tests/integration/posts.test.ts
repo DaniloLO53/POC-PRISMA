@@ -498,6 +498,76 @@ describe("User's posts", () => {
     expect(commentsToCommentCount).toBe(1);
   });
 
+  it("should return return 200 when get post comments", async () => {
+    const expectedCode = 200;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id,
+      });
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id,
+      });
+    const resultPostComments = await server
+      .get(`/posts/${resultPost.body.id}/comments`)
+      .set({ "Authorization": token1 });
+
+    expect(resultPostComments.body.length).toBe(2);
+    expect(resultPostComments.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return quantity of post comments", async () => {
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id,
+      });
+    await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id,
+      });
+    const resultPostComments = await server
+      .get(`/posts/${resultPost.body.id}/comments/count`)
+      .set({ "Authorization": token1 });
+
+    expect(resultPostComments.body.commentsQuantity).toBe(2);
+  });
+
   it("should return return 401 when trying to update comment from others", async () => {
     const expectedCode = 401;
     const userData1 = createUserData();

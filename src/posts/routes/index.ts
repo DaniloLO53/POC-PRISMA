@@ -22,6 +22,8 @@ import {
   rateComment,
   getPostRatings,
   countPostRatings,
+  getPostComments,
+  countPostComments,
 } from "@/posts/controllers";
 
 const postsRoute = express.Router();
@@ -46,13 +48,18 @@ postsRoute.get("/:postId/ratings/count",
   authenticateToken,
   countPostRatings
 );
+postsRoute.get("/:postId/comments",
+  validateParams(postIdSchema),
+  authenticateToken,
+  getPostComments
+);
+postsRoute.get("/:postId/comments/count",
+  validateParams(postIdSchema),
+  authenticateToken,
+  countPostComments
+);
 
 postsRoute.post("/comments", validateBody(commentSchema), authenticateToken, comment);
-postsRoute.post("/comments/rating",
-  validateBody(commentRatingSchema),
-  authenticateToken,
-  rateComment
-);
 postsRoute.put("/comments/:commentId",
   validateBody(commentUpdateSchema),
   validateParams(commentIdSchema),
@@ -63,6 +70,12 @@ postsRoute.delete("/comments/:commentId",
   validateParams(commentIdSchema),
   authenticateToken,
   deleteComment
+);
+
+postsRoute.post("/comments/rating",
+  validateBody(commentRatingSchema),
+  authenticateToken,
+  rateComment
 );
 
 postsRoute.get("/", getAllPosts);

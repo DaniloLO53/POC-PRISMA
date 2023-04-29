@@ -140,12 +140,33 @@ export async function rateComment({
   });
 }
 
+export async function getPostComments(postId: string) {
+  const post = await postsRepository.findPostById(postId);
+  if (!post) throw postNotFoundError();
+
+  const ratings = await postsRepository.findPostComments(postId);
+
+
+  return ratings;
+}
+
+export async function countPostComments(postId: string) {
+  const post = await postsRepository.findPostById(postId);
+  if (!post) throw postNotFoundError();
+
+  const ratingsQuantity = await postsRepository.countPostComments(postId);
+
+  return ratingsQuantity;
+}
+
 const postsService = {
   createPost,
   comment,
   updateComment,
   deleteComment,
   rateComment,
+  getPostComments,
+  countPostComments,
   getPostRatings,
   countPostRatings,
   updatePost,

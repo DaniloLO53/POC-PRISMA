@@ -131,12 +131,30 @@ async function rateComment({
   });
 }
 
+async function findPostComments(postId: string) {
+  return await prisma.comment.findMany({
+    where: {
+      post_id: Number(postId)
+    }
+  });
+}
+
+async function countPostComments(postId: string) {
+  return await prisma.comment.count({
+    where: {
+      post_id: Number(postId)
+    }
+  });
+}
+
 const postsRepository = {
   createPost,
   comment,
   updateComment,
   deleteComment,
   rateComment,
+  findPostComments,
+  countPostComments,
   ratePost,
   findPostRatings,
   countPostRatings,

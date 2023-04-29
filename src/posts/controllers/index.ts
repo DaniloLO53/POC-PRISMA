@@ -214,3 +214,35 @@ export async function deleteComment(
     next(error);
   }
 }
+
+export async function getPostComments(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { postId } = request.params;
+
+  try {
+    const ratings = await postsService.getPostComments(postId);
+
+    return response.status(Successful.OK).send(ratings);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function countPostComments(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { postId } = request.params;
+
+  try {
+    const commentsQuantity = await postsService.countPostComments(postId);
+
+    return response.status(Successful.OK).send({ commentsQuantity });
+  } catch (error) {
+    next(error);
+  }
+}
