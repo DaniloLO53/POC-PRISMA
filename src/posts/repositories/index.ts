@@ -67,6 +67,14 @@ async function ratePost({
   });
 }
 
+async function findPostRatings(postId: string) {
+  return await prisma.postRating.findMany({
+    where: {
+      post_id: Number(postId)
+    }
+  });
+}
+
 async function comment({
   post_id, comment_id, author_id, content
 }: ICommentDTO): Promise<Comment> {
@@ -122,6 +130,7 @@ const postsRepository = {
   deleteComment,
   rateComment,
   ratePost,
+  findPostRatings,
   findAll,
   findPostById,
   findCommentById,

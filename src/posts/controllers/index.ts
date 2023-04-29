@@ -98,6 +98,22 @@ export async function ratePost(
   }
 }
 
+export async function getPostRatings(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { postId } = request.params;
+
+  try {
+    const post = await postsService.getPostRatings(postId);
+
+    return response.status(Successful.OK).send(post);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function comment(
   request: AuthenticatedRequest,
   response: Response,

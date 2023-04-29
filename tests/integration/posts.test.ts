@@ -4,6 +4,7 @@ import { cleanDb, generateValidToken } from "../helpers";
 import { mockCreateUser } from "../factories";
 import app, { close, init } from "@/app";
 import { prisma } from "@/config";
+import { IPostRateDTO } from "@/posts/services/interfaces";
 
 type ServerType = supertest.SuperTest<supertest.Test>; 
 const server: ServerType= supertest(app);
@@ -225,6 +226,31 @@ describe("User's posts", () => {
     expect(resultRating.statusCode).toBe(expectedCode);
   });
 
+  it("should return return 422 when invalid post rated data", async () => {
+    const expectedCode = 422;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultRating = await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: faker.lorem.word(),
+        post_id: resultPost.body.id
+      });
+
+    expect(resultRating.statusCode).toBe(expectedCode);
+  });
+
   it("should return return 201 when post is rated", async () => {
     const expectedCode = 201;
     const userData1 = createUserData();
@@ -270,6 +296,50 @@ describe("User's posts", () => {
     expect(resultRating2.statusCode).toBe(expectedCode);
     expect(dislikesCount).toBe(1);
     expect(likesCount).toBe(1);
+  });
+
+  it("should return return 200 when get post ratings", async () => {
+    const expectedCode = 200;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        post_id: resultPost.body.id
+      });
+    await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "DISLIKE",
+        post_id: resultPost.body.id
+      });
+    const resultPostRating = await server
+      .get(`/posts/${resultPost.body.id}/ratings`)
+      .set({ "Authorization": token1 });
+    const likesCount = resultPostRating.body
+      .filter(({ type }: {type: "LIKE" | "DISLIKE"}) => type === "LIKE").length;
+    const dislikesCount = resultPostRating.body
+      .filter(({ type }: {type: "LIKE" | "DISLIKE"}) => type === "DISLIKE").length;
+
+    console.log("Result post ratings", resultPostRating.body);
+
+    expect(resultPostRating.body.length).toBe(2);
+    expect(likesCount).toBe(1);
+    expect(dislikesCount).toBe(1);
+    expect(resultPostRating.statusCode).toBe(expectedCode);
   });
 
   it("should return return 409 when post to be commented is not found", async () => {

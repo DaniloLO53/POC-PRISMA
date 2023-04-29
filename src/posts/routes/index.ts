@@ -20,6 +20,7 @@ import {
   updateComment,
   deleteComment,
   rateComment,
+  getPostRatings,
 } from "@/posts/controllers";
 import { userIdSchema } from "@/users/schemas";
 
@@ -33,7 +34,13 @@ postsRoute.put("/:postId",
   authenticateToken,
   updatePost
 );
+
 postsRoute.post("/rating", validateBody(postRatingSchema), authenticateToken, ratePost);
+postsRoute.get("/:postId/ratings",
+  validateParams(postIdSchema),
+  authenticateToken,
+  getPostRatings
+);
 
 postsRoute.post("/comments", validateBody(commentSchema), authenticateToken, comment);
 postsRoute.post("/comments/rating",
