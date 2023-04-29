@@ -334,12 +334,44 @@ describe("User's posts", () => {
     const dislikesCount = resultPostRating.body
       .filter(({ type }: {type: "LIKE" | "DISLIKE"}) => type === "DISLIKE").length;
 
-    console.log("Result post ratings", resultPostRating.body);
-
     expect(resultPostRating.body.length).toBe(2);
     expect(likesCount).toBe(1);
     expect(dislikesCount).toBe(1);
     expect(resultPostRating.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return quantity of post ratings", async () => {
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        post_id: resultPost.body.id
+      });
+    await server
+      .post("/posts/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "DISLIKE",
+        post_id: resultPost.body.id
+      });
+    const resultPostRatingCount = await server
+      .get(`/posts/${resultPost.body.id}/ratings/count`)
+      .set({ "Authorization": token1 });
+
+    expect(resultPostRatingCount.body.ratingsQuantity).toBe(2);
   });
 
   it("should return return 409 when post to be commented is not found", async () => {

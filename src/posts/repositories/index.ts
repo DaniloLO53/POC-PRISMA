@@ -75,6 +75,14 @@ async function findPostRatings(postId: string) {
   });
 }
 
+async function countPostRatings(postId: string) {
+  return await prisma.postRating.count({
+    where: {
+      post_id: Number(postId)
+    }
+  });
+}
+
 async function comment({
   post_id, comment_id, author_id, content
 }: ICommentDTO): Promise<Comment> {
@@ -131,6 +139,7 @@ const postsRepository = {
   rateComment,
   ratePost,
   findPostRatings,
+  countPostRatings,
   findAll,
   findPostById,
   findCommentById,

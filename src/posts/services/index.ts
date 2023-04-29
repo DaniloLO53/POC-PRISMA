@@ -33,6 +33,15 @@ export async function getPostRatings(postId: string) {
   return ratings;
 }
 
+export async function countPostRatings(postId: string) {
+  const post = await postsRepository.findPostById(postId);
+  if (!post) throw postNotFoundError();
+
+  const ratingsQuantity = await postsRepository.countPostRatings(postId);
+
+  return ratingsQuantity;
+}
+
 export async function createPost({
   content, author_id, movie_imdb
 }: IPostDTO): Promise<Post> {
@@ -138,6 +147,7 @@ const postsService = {
   deleteComment,
   rateComment,
   getPostRatings,
+  countPostRatings,
   updatePost,
   ratePost,
   getAllPosts,

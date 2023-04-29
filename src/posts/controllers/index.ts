@@ -106,9 +106,25 @@ export async function getPostRatings(
   const { postId } = request.params;
 
   try {
-    const post = await postsService.getPostRatings(postId);
+    const ratings = await postsService.getPostRatings(postId);
 
-    return response.status(Successful.OK).send(post);
+    return response.status(Successful.OK).send(ratings);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function countPostRatings(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { postId } = request.params;
+
+  try {
+    const ratingsQuantity = await postsService.countPostRatings(postId);
+
+    return response.status(Successful.OK).send({ ratingsQuantity });
   } catch (error) {
     next(error);
   }

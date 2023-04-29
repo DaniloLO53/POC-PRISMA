@@ -21,8 +21,8 @@ import {
   deleteComment,
   rateComment,
   getPostRatings,
+  countPostRatings,
 } from "@/posts/controllers";
-import { userIdSchema } from "@/users/schemas";
 
 const postsRoute = express.Router();
 
@@ -40,6 +40,11 @@ postsRoute.get("/:postId/ratings",
   validateParams(postIdSchema),
   authenticateToken,
   getPostRatings
+);
+postsRoute.get("/:postId/ratings/count",
+  validateParams(postIdSchema),
+  authenticateToken,
+  countPostRatings
 );
 
 postsRoute.post("/comments", validateBody(commentSchema), authenticateToken, comment);
