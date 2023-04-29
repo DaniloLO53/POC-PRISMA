@@ -14,8 +14,6 @@ function validate(schema: ObjectSchema, type: SchemaType) {
   return function(request: Request, response: Response, next: NextFunction) {
     const { error } = schema.validate(request[type], { abortEarly: false });
 
-    // type === "params" && console.log("Params: ", request[type]);
-
     if (error) {
       const details = error.details?.map((detail) => detail.message) || [];
       const customError = invalidDataError(details);

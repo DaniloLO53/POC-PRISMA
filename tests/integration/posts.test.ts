@@ -819,4 +819,90 @@ describe("User's posts", () => {
     expect(dislikesCount).toBe(1);
     expect(likesCount).toBe(1);
   });
+
+  it("should return return 200 when get comment ratings", async () => {
+    const expectedCode = 200;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    await server
+      .post("/posts/comments/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        comment_id: resultComment.body.id
+      });
+    await server
+      .post("/posts/comments/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "DISLIKE",
+        comment_id: resultComment.body.id
+      });
+    const resultCommentRating = await server
+      .get(`/posts/comments/${resultComment.body.id}/ratings`)
+      .set({ "Authorization": token1 });
+
+    expect(resultCommentRating.body.length).toBe(2);
+    expect(resultCommentRating.statusCode).toBe(expectedCode);
+  });
+
+  it("should return return quantity of comment ratings", async () => {
+    const expectedCode = 200;
+    const userData1 = createUserData();
+    const user1 = await mockCreateUser(userData1);
+
+    const token1 = await generateValidToken(user1);
+
+    const resultPost = await server
+      .post("/posts")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.text(),
+        movie_imdb: "tt1234567"
+      });
+    const resultComment = await server
+      .post("/posts/comments")
+      .set({ "Authorization": token1 })
+      .send({
+        content: faker.lorem.paragraphs(),
+        post_id: resultPost.body.id
+      });
+    await server
+      .post("/posts/comments/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "LIKE",
+        comment_id: resultComment.body.id
+      });
+    await server
+      .post("/posts/comments/rating")
+      .set({ "Authorization": token1 })
+      .send({
+        type: "DISLIKE",
+        comment_id: resultComment.body.id
+      });
+    const resultCommentRatingCount = await server
+      .get(`/posts/comments/${resultComment.body.id}/ratings/count`)
+      .set({ "Authorization": token1 });
+
+    expect(resultCommentRatingCount.body.ratingsQuantity).toBe(2);
+    expect(resultCommentRatingCount.statusCode).toBe(expectedCode);
+  });
 });

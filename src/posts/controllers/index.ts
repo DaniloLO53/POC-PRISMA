@@ -173,6 +173,39 @@ export async function rateComment(
   }
 }
 
+export async function getPostCommentRatings(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { commentId } = request.params;
+
+  
+  try {
+    const ratings = await postsService.getPostCommentRatings(commentId);
+
+    return response.status(Successful.OK).send(ratings);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function countPostCommentRatings(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { commentId } = request.params;
+
+  try {
+    const ratingsQuantity = await postsService.countPostCommentRatings(commentId);
+
+    return response.status(Successful.OK).send({ ratingsQuantity });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function updateComment(
   request: AuthenticatedRequest,
   response: Response,

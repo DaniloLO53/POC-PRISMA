@@ -10,6 +10,7 @@ import {
 import { cannotModifyError } from "@/errors/cannotModifyError.errors";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
 import postsRepository from "@/posts/repositories";
+import { commentNotFoundError } from "@/errors/notFoundComment.errors";
 
 export async function getAllPosts() {
   const posts = await postsRepository.findAll();
@@ -140,6 +141,25 @@ export async function rateComment({
   });
 }
 
+export async function getPostCommentRatings(commentId: string) {
+  const comment = await postsRepository.findCommentById(Number(commentId));
+  if (!comment) throw commentNotFoundError();
+
+  const ratings = await postsRepository.findPostCommentRatings(commentId);
+
+
+  return ratings;
+}
+
+export async function countPostCommentRatings(commentId: string) {
+  const comment = await postsRepository.findCommentById(Number(commentId));
+  if (!comment) throw commentNotFoundError();
+
+  const ratingsQuantity = await postsRepository.countPostCommentRatings(commentId);
+
+  return ratingsQuantity;
+}
+
 export async function getPostComments(postId: string) {
   const post = await postsRepository.findPostById(postId);
   if (!post) throw postNotFoundError();
@@ -165,6 +185,8 @@ const postsService = {
   updateComment,
   deleteComment,
   rateComment,
+  countPostCommentRatings,
+  getPostCommentRatings,
   getPostComments,
   countPostComments,
   getPostRatings,

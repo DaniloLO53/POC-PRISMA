@@ -12,8 +12,8 @@ export function errorHandler(
 
   if (error.name === "JsonWebTokenError") error.statusCode = ClientErrors.UNAUTHORIZED;
 
-  console.log("Error name: ", error.name);
-  console.log("Error message: ", error.message);
+  // console.log("Error name: ", error.name);
+  // console.log("Error message: ", error.message);
 
   return response.status(error.statusCode || ServerErrors.INTERNAL_SERVER_ERROR).send({
     message: error.message,
