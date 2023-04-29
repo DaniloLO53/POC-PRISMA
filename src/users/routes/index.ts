@@ -3,10 +3,16 @@ import {
   getAllUsers,
   signUp,
   signIn,
-  createOrDestroyRelashionship
+  createOrDestroyRelashionship,
+  getPostsFromUser
 } from "@/users/controllers";
-import { validateBody } from "@/middlewares/schemaValidation.middleware";
-import { signUpSchema, signInSchema, relashionshipSchema } from "@/users/schemas";
+import { validateBody, validateParams } from "@/middlewares/schemaValidation.middleware";
+import {
+  signUpSchema,
+  signInSchema,
+  relashionshipSchema,
+  userIdSchema
+} from "@/users/schemas";
 import { authenticateToken } from "@/middlewares/authentication.middleware";
 
 const usersRoute = express.Router();
@@ -19,6 +25,12 @@ usersRoute.post("/relashionship",
   authenticateToken,
   createOrDestroyRelashionship
 );
+usersRoute.get("/:userId/posts",
+  validateParams(userIdSchema),
+  authenticateToken,
+  getPostsFromUser
+);
+
 usersRoute.get("/", getAllUsers);
 
 export { usersRoute };

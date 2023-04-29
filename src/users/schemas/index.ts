@@ -40,3 +40,7 @@ export const relashionshipSchema = Joi.object({
     .required(),
   idFromFollowed: Joi.number().required(),
 });
+
+export const userIdSchema = Joi.object(({
+  userId: Joi.number().required(),
+}));

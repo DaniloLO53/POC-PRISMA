@@ -166,5 +166,34 @@ describe("CRUD on users", () => {
   
       expect(result.status).toBe(expectedCode);
     });
+
+    it("should return return 200 and get posts from user", async () => {
+      const expectedCode = 200;
+      const userData = createUserData();
+      const user = await mockCreateUser(userData);
+  
+      const token = await generateValidToken(user);
+      await server
+        .post("/posts")
+        .set({ "Authorization": token })
+        .send({
+          content: faker.lorem.text(),
+          movie_imdb: "tt1234567"
+        });
+      await server
+        .post("/posts")
+        .set({ "Authorization": token })
+        .send({
+          content: faker.lorem.text(),
+          movie_imdb: "tt1234567"
+        });
+  
+      const posts = await server
+        .get(`/users/${user.id}/posts`)
+        .set({ "Authorization": token });
+  
+      expect(posts.body.length).toBe(2);
+      expect(posts.statusCode).toBe(expectedCode);
+    });
   });
 });

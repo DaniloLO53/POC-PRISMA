@@ -19,32 +19,23 @@ import {
   comment,
   updateComment,
   deleteComment,
-  rateComment
+  rateComment,
 } from "@/posts/controllers";
+import { userIdSchema } from "@/users/schemas";
 
 const postsRoute = express.Router();
 
-postsRoute.post("/",
-  validateBody(postSchema),
-  authenticateToken,
-  createPost
-);
+postsRoute.post("/", validateBody(postSchema), authenticateToken, createPost);
+postsRoute.get("/:postId", validateParams(postIdSchema), authenticateToken, getPost);
 postsRoute.put("/:postId",
   validateBody(postSchema),
   validateParams(postIdSchema),
   authenticateToken,
   updatePost
 );
-postsRoute.post("/rating",
-  validateBody(postRatingSchema),
-  authenticateToken,
-  ratePost
-);
-postsRoute.post("/comments",
-  validateBody(commentSchema),
-  authenticateToken,
-  comment
-);
+postsRoute.post("/rating", validateBody(postRatingSchema), authenticateToken, ratePost);
+
+postsRoute.post("/comments", validateBody(commentSchema), authenticateToken, comment);
 postsRoute.post("/comments/rating",
   validateBody(commentRatingSchema),
   authenticateToken,
@@ -63,6 +54,5 @@ postsRoute.delete("/comments/:commentId",
 );
 
 postsRoute.get("/", getAllPosts);
-postsRoute.get("/:postId", getPost);
 
 export { postsRoute };

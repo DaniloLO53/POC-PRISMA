@@ -56,12 +56,21 @@ async function createOrDestroyRelashionship({
   }
 }
 
+async function findPostsByUserId(userId: string) {
+  return await prisma.post.findMany({
+    where: {
+      author_id: Number(userId)
+    }
+  });
+}
+
 const usersRepository = {
   findAll,
   findFolloweds,
   findUnique,
   create,
-  createOrDestroyRelashionship
+  createOrDestroyRelashionship,
+  findPostsByUserId
 };
 
 export default usersRepository;

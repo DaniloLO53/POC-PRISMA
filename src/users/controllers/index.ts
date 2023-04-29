@@ -80,3 +80,19 @@ export async function signUp(request: Request, response: Response, next: NextFun
     next(error);
   }
 }
+
+export async function getPostsFromUser(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  const { userId } = request.params;
+
+  try {
+    const posts = await usersService.getPostsFromUser(userId);
+
+    return response.status(Successful.OK).send(posts);
+  } catch (error) {
+    next(error);
+  }
+}

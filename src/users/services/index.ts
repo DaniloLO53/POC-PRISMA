@@ -64,11 +64,18 @@ export async function createOrDestroyRelashionship({
   });
 }
 
+export async function getPostsFromUser(userId: string) {
+  const posts = await usersRepository.findPostsByUserId(userId);
+
+  return posts;
+}
+
 const usersService = {
   getAllUsers,
   signUp,
   signIn,
-  createOrDestroyRelashionship
+  createOrDestroyRelashionship,
+  getPostsFromUser
 };
 
 export default usersService;
