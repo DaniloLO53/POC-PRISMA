@@ -19,7 +19,7 @@ export async function countPostRatings(postId: string) {
 
   const ratingsQuantity = await postsRepository.countPostRatings(postId);
 
-  return ratingsQuantity;
+  return { ratingsQuantity };
 }
 
 export async function ratePost({

@@ -34,5 +34,5 @@ export async function countPostCommentRatings(commentId: string) {
 
   const ratingsQuantity = await postsRepository.countPostCommentRatings(commentId);
 
-  return ratingsQuantity;
+  return { ratingsQuantity };
 }

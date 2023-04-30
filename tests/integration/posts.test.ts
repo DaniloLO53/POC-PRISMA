@@ -100,7 +100,7 @@ describe("User's posts", () => {
         movie_imdb: "tt1234567"
       });
     const resultUpdate = await server
-      .put(`/posts/${String(resultPost.body.id)}`)
+      .put(`/posts/${String(resultPost.body.data.id)}`)
       .set({ "Authorization": token2 })
       .send({
         content: faker.lorem.text(),
@@ -154,12 +154,12 @@ describe("User's posts", () => {
         movie_imdb: "tt1234567"
       });
     const resultUpdate = await server
-      .put(`/posts/${String(resultPost.body.id)}`)
+      .put(`/posts/${String(resultPost.body.data.id)}`)
       .set({ "Authorization": token1 })
       .send(dataToUpdate);
 
     expect(resultUpdate.statusCode).toBe(expectedCode);
-    expect(resultUpdate.body).toMatchObject(dataToUpdate);
+    expect(resultUpdate.body.data).toMatchObject(dataToUpdate);
   });
 
   it("should return return 201 when post is created", async () => {
@@ -179,7 +179,7 @@ describe("User's posts", () => {
       .send(dataSent);
 
     expect(resultPost.statusCode).toBe(expectedCode);
-    expect(resultPost.body).toMatchObject(dataSent);
+    expect(resultPost.body.data).toMatchObject(dataSent);
   });
 
   it("should return return 409 when post rated not found", async () => {
@@ -219,7 +219,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         type: faker.lorem.word(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
 
     expect(resultRating.statusCode).toBe(expectedCode);
@@ -244,7 +244,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         type: faker.lorem.word(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
 
     expect(resultRating.statusCode).toBe(expectedCode);
@@ -269,24 +269,24 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultRating2 = await server
       .post("/posts/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "DISLIKE",
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const likesCount = await prisma.postRating.count({
       where: {
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
         type: "LIKE"
       }
     });
     const dislikesCount = await prisma.postRating.count({
       where: {
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
         type: "DISLIKE"
       }
     });
@@ -316,24 +316,24 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     await server
       .post("/posts/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "DISLIKE",
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultPostRating = await server
-      .get(`/posts/${resultPost.body.id}/ratings`)
+      .get(`/posts/${resultPost.body.data.id}/ratings`)
       .set({ "Authorization": token1 });
-    const likesCount = resultPostRating.body
+    const likesCount = resultPostRating.body.data
       .filter(({ type }: {type: "LIKE" | "DISLIKE"}) => type === "LIKE").length;
-    const dislikesCount = resultPostRating.body
+    const dislikesCount = resultPostRating.body.data
       .filter(({ type }: {type: "LIKE" | "DISLIKE"}) => type === "DISLIKE").length;
 
-    expect(resultPostRating.body.length).toBe(2);
+    expect(resultPostRating.body.data.length).toBe(2);
     expect(likesCount).toBe(1);
     expect(dislikesCount).toBe(1);
     expect(resultPostRating.statusCode).toBe(expectedCode);
@@ -357,20 +357,20 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     await server
       .post("/posts/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "DISLIKE",
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultPostRatingCount = await server
-      .get(`/posts/${resultPost.body.id}/ratings/count`)
+      .get(`/posts/${resultPost.body.data.id}/ratings/count`)
       .set({ "Authorization": token1 });
 
-    expect(resultPostRatingCount.body.ratingsQuantity).toBe(2);
+    expect(resultPostRatingCount.body.data.ratingsQuantity).toBe(2);
   });
 
   it("should return return 409 when post to be commented is not found", async () => {
@@ -410,7 +410,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: 42,
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
 
     expect(resultComment.statusCode).toBe(expectedCode);
@@ -436,12 +436,12 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
 
     const commentsCount = await prisma.comment.count({
       where: {
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
       }
     });
 
@@ -468,7 +468,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
 
     await server
@@ -476,19 +476,19 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id,
-        comment_id: resultComment.body.id
+        post_id: resultPost.body.data.id,
+        comment_id: resultComment.body.data.id
       });
     
     const postCommentsCount = await prisma.comment.count({
       where: {
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
       }
     });
     const commentsToCommentCount = await prisma.comment.count({
       where: {
-        post_id: resultPost.body.id,
-        comment_id: resultComment.body.id
+        post_id: resultPost.body.data.id,
+        comment_id: resultComment.body.data.id
       }
     });
 
@@ -516,20 +516,20 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
       });
     await server
       .post("/posts/comments")
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
       });
     const resultPostComments = await server
-      .get(`/posts/${resultPost.body.id}/comments`)
+      .get(`/posts/${resultPost.body.data.id}/comments`)
       .set({ "Authorization": token1 });
 
-    expect(resultPostComments.body.length).toBe(2);
+    expect(resultPostComments.body.data.length).toBe(2);
     expect(resultPostComments.statusCode).toBe(expectedCode);
   });
 
@@ -551,20 +551,20 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
       });
     await server
       .post("/posts/comments")
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id,
+        post_id: resultPost.body.data.id,
       });
     const resultPostComments = await server
-      .get(`/posts/${resultPost.body.id}/comments/count`)
+      .get(`/posts/${resultPost.body.data.id}/comments/count`)
       .set({ "Authorization": token1 });
 
-    expect(resultPostComments.body.commentsQuantity).toBe(2);
+    expect(resultPostComments.body.data.commentsQuantity).toBe(2);
   });
 
   it("should return return 401 when trying to update comment from others", async () => {
@@ -589,10 +589,10 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultCommentUpdate = await server
-      .put(`/posts/comments/${resultComment.body.id}`)
+      .put(`/posts/comments/${resultComment.body.data.id}`)
       .set({ "Authorization": token2 })
       .send({
         content: faker.lorem.paragraphs(),
@@ -620,7 +620,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultCommentUpdate = await server
       .put(`/posts/comments/${faker.random.numeric()}`)
@@ -651,10 +651,10 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultCommentUpdate = await server
-      .put(`/posts/comments/${resultComment.body.id}`)
+      .put(`/posts/comments/${resultComment.body.data.id}`)
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
@@ -685,10 +685,10 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultCommentDelete = await server
-      .delete(`/posts/comments/${resultComment.body.id}`)
+      .delete(`/posts/comments/${resultComment.body.data.id}`)
       .set({ "Authorization": token2 })
       .send({
         content: faker.lorem.paragraphs(),
@@ -716,7 +716,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultCommentDelete = await server
       .delete(`/posts/comments/${faker.random.numeric()}`)
@@ -747,17 +747,17 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultCommentDelete = await server
-      .delete(`/posts/comments/${resultComment.body.id}`)
+      .delete(`/posts/comments/${resultComment.body.data.id}`)
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
       });
     const commentCount = await prisma.comment.count({
       where: {
-        id: resultComment.body.id
+        id: resultComment.body.data.id
       }
     });
 
@@ -784,31 +784,31 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     const resultRating1 = await server
       .post("/posts/comments/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        comment_id: resultComment.body.id
+        comment_id: resultComment.body.data.id
       });
     const resultRating2 = await server
       .post("/posts/comments/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "DISLIKE",
-        comment_id: resultComment.body.id
+        comment_id: resultComment.body.data.id
       });
     const likesCount = await prisma.commentRating.count({
       where: {
-        comment_id: resultComment.body.id,
+        comment_id: resultComment.body.data.id,
         type: "LIKE"
       }
     });
     const dislikesCount = await prisma.commentRating.count({
       where: {
-        comment_id: resultComment.body.id,
+        comment_id: resultComment.body.data.id,
         type: "DISLIKE"
       }
     });
@@ -838,27 +838,27 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     await server
       .post("/posts/comments/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        comment_id: resultComment.body.id
+        comment_id: resultComment.body.data.id
       });
     await server
       .post("/posts/comments/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "DISLIKE",
-        comment_id: resultComment.body.id
+        comment_id: resultComment.body.data.id
       });
     const resultCommentRating = await server
-      .get(`/posts/comments/${resultComment.body.id}/ratings`)
+      .get(`/posts/comments/${resultComment.body.data.id}/ratings`)
       .set({ "Authorization": token1 });
 
-    expect(resultCommentRating.body.length).toBe(2);
+    expect(resultCommentRating.body.data.length).toBe(2);
     expect(resultCommentRating.statusCode).toBe(expectedCode);
   });
 
@@ -881,27 +881,27 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: resultPost.body.id
+        post_id: resultPost.body.data.id
       });
     await server
       .post("/posts/comments/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        comment_id: resultComment.body.id
+        comment_id: resultComment.body.data.id
       });
     await server
       .post("/posts/comments/rating")
       .set({ "Authorization": token1 })
       .send({
         type: "DISLIKE",
-        comment_id: resultComment.body.id
+        comment_id: resultComment.body.data.id
       });
     const resultCommentRatingCount = await server
-      .get(`/posts/comments/${resultComment.body.id}/ratings/count`)
+      .get(`/posts/comments/${resultComment.body.data.id}/ratings/count`)
       .set({ "Authorization": token1 });
 
-    expect(resultCommentRatingCount.body.ratingsQuantity).toBe(2);
+    expect(resultCommentRatingCount.body.data.ratingsQuantity).toBe(2);
     expect(resultCommentRatingCount.statusCode).toBe(expectedCode);
   });
 });

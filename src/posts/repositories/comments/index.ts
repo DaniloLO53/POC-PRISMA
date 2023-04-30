@@ -1,6 +1,6 @@
 import { Comment } from "@prisma/client";
 import { prisma } from "@/config";
-import { ICommentDTO, ICommentUpdateDTO } from "@/posts/interfaces";
+import { ICommentDeleteDTO, ICommentDTO, ICommentUpdateDTO } from "@/posts/interfaces";
 
 export async function comment({
   post_id, comment_id, author_id, content
@@ -29,11 +29,11 @@ export async function updateComment({
 }
 
 export async function deleteComment({
-  commentId
-}: Omit<ICommentUpdateDTO, "content" | "author_id">): Promise<void> {
+  id
+}: Omit<ICommentDeleteDTO, "author_id">): Promise<void> {
   await prisma.comment.delete({
     where: {
-      id: Number(commentId)
+      id: Number(id)
     }
   });
 }

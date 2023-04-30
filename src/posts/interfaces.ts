@@ -27,6 +27,11 @@ export interface ICommentRateDTO {
   comment_id: string
 }
 
-export interface ICommentUpdateDTO extends Omit<ICommentDTO, "comment_id" | "post_id"> {
+export interface ICommentUpdateDTO extends Omit<ICommentDTO, "post_id"> {
   commentId: string,
+}
+
+export interface ICommentDeleteDTO {
+  id: number,
+  author_id: number
 }

@@ -7,41 +7,58 @@ import {
   commentUpdateSchema,
   postIdSchema
 } from "@/posts/schemas";
+import { create, get, remove, update } from "@/posts/controllers";
 import {
-  comment,
+  PostsCreateServices,
+  PostsGetServices,
+  PostsRemoveServices,
+  PostsUpdateServices
+} from "@/posts/services";
+
+const {
   countPostComments,
-  deleteComment,
-  getPostComments,
-  updateComment
-} from "@/posts/controllers/comments";
+  getPostComments
+} = PostsGetServices;
+
+const {
+  deleteComment
+} = PostsRemoveServices;
+
+const {
+  updateComment,
+} = PostsUpdateServices;
+
+const {
+  comment
+} = PostsCreateServices;
 
 const postsCommentsRoute = express.Router();
 
 postsCommentsRoute.get("/:postId/comments",
   validateParams(postIdSchema),
   authenticateToken,
-  getPostComments
+  get(getPostComments, "postId")
 );
 postsCommentsRoute.get("/:postId/comments/count",
   validateParams(postIdSchema),
   authenticateToken,
-  countPostComments
+  get(countPostComments, "postId")
 );
 postsCommentsRoute.post("/comments",
   validateBody(commentSchema),
   authenticateToken,
-  comment
+  create(comment)
 );
 postsCommentsRoute.put("/comments/:commentId",
   validateBody(commentUpdateSchema),
   validateParams(commentIdSchema),
   authenticateToken,
-  updateComment
+  update(updateComment, "commentId")
 );
 postsCommentsRoute.delete("/comments/:commentId",
   validateParams(commentIdSchema),
   authenticateToken,
-  deleteComment
+  remove(deleteComment, "commentId")
 );
 
 export default postsCommentsRoute;

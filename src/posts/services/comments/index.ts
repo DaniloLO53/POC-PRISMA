@@ -1,7 +1,7 @@
 import { Comment } from "@prisma/client";
 import { cannotModifyError } from "@/errors/cannotModifyError.errors";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
-import { ICommentDTO, ICommentUpdateDTO } from "@/posts/interfaces";
+import { ICommentDeleteDTO, ICommentDTO, ICommentUpdateDTO } from "@/posts/interfaces";
 import postsRepository from "@/posts/repositories";
 
 export async function comment({
@@ -37,33 +37,31 @@ export async function updateComment({
 }
 
 export async function deleteComment({
-  author_id, commentId
-}: Omit<ICommentUpdateDTO, "content">): Promise<void> {
-  const comment = await postsRepository.findCommentById(Number(commentId));
+  author_id, id
+}: ICommentDeleteDTO): Promise<void> {
+  const comment = await postsRepository.findCommentById(Number(id));
 
   if (!comment) throw postNotFoundError();
   if (comment.author_id !== author_id) throw cannotModifyError();
 
-  await postsRepository.deleteComment({
-    commentId,
-  });
+  await postsRepository.deleteComment({ id });
 }
 
 export async function getPostComments(postId: string) {
   const post = await postsRepository.findPostById(postId);
   if (!post) throw postNotFoundError();
 
-  const ratings = await postsRepository.findPostComments(postId);
+  const comments = await postsRepository.findPostComments(postId);
 
 
-  return ratings;
+  return comments;
 }
 
 export async function countPostComments(postId: string) {
   const post = await postsRepository.findPostById(postId);
   if (!post) throw postNotFoundError();
 
-  const ratingsQuantity = await postsRepository.countPostComments(postId);
+  const commentsQuantity = await postsRepository.countPostComments(postId);
 
-  return ratingsQuantity;
+  return { commentsQuantity };
 }
