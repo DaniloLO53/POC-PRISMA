@@ -15,22 +15,10 @@ import {
   PostsUpdateServices
 } from "@/posts/services";
 
-const {
-  countPostComments,
-  getPostComments
-} = PostsGetServices;
-
-const {
-  deleteComment
-} = PostsRemoveServices;
-
-const {
-  updateComment,
-} = PostsUpdateServices;
-
-const {
-  comment
-} = PostsCreateServices;
+const { countPostComments, getPostComments } = PostsGetServices;
+const { deleteComment } = PostsRemoveServices;
+const { updateComment } = PostsUpdateServices;
+const { comment } = PostsCreateServices;
 
 const postsCommentsRoute = express.Router();
 

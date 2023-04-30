@@ -9,17 +9,9 @@ import {
 } from "@/posts/services";
 import { create, get, update } from "@/posts/controllers";
 
-const {
-  getPost
-} = PostsGetServices;
-
-const {
-  createPost
-} = PostsCreateServices;
-
-const {
-  updatePost
-} = PostsUpdateServices;
+const { getPost } = PostsGetServices;
+const { createPost } = PostsCreateServices;
+const { updatePost } = PostsUpdateServices;
 
 const postsContentRoute = express.Router();
 

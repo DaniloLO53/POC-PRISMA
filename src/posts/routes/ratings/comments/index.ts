@@ -5,14 +5,8 @@ import { authenticateToken } from "@/middlewares/authentication.middleware";
 import { PostsCreateServices, PostsGetServices } from "@/posts/services";
 import { create, get } from "@/posts/controllers";
 
-const {
-  getPostCommentRatings,
-  countPostCommentRatings
-} = PostsGetServices;
-
-const {
-  rateComment
-} = PostsCreateServices;
+const { getPostCommentRatings, countPostCommentRatings } = PostsGetServices;
+const { rateComment } = PostsCreateServices;
 
 const commentRatingRoute = express.Router();
 

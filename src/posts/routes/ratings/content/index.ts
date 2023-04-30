@@ -5,14 +5,8 @@ import { validateBody, validateParams } from "@/middlewares/schemaValidation.mid
 import { PostsCreateServices, PostsGetServices } from "@/posts/services";
 import { create, get } from "@/posts/controllers";
 
-const {
-  getPostRatings,
-  countPostRatings
-} = PostsGetServices;
-
-const {
-  ratePost
-} = PostsCreateServices;
+const { getPostRatings, countPostRatings } = PostsGetServices;
+const { ratePost } = PostsCreateServices;
 
 const postRatingRoute = express.Router();
 
