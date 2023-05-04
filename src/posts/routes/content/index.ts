@@ -20,16 +20,16 @@ postsContentRoute.post("/",
   authenticateToken,
   create(createPost)
 );
-postsContentRoute.get("/:postId",
+postsContentRoute.get("/:post_id",
   validateParams(postIdSchema),
   authenticateToken,
-  get(getPost, "postId")
+  get(getPost)
 );
-postsContentRoute.put("/:postId",
+postsContentRoute.put("/:post_id",
   validateBody(postSchema),
   validateParams(postIdSchema),
   authenticateToken,
-  update(updatePost, "postId")
+  update(updatePost)
 );
 // postsContentRoute.get("/", getAllPosts);
 

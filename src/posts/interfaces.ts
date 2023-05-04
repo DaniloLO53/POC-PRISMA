@@ -1,37 +1,39 @@
-export interface IPostDTO {
-  content: string;
-  author_id: number,
+export interface Auth {
+  author_id: number;
+}
+
+export interface PostId {
+  post_id: number;
+}
+
+export interface CommentId {
+  comment_id: number;
+}
+
+interface Content {
+  content: string
+}
+
+interface Rate {
+  type: "LIKE" | "DISLIKE";
+}
+
+export interface CreatePost extends Auth, Content {
   movie_imdb: string
 }
 
-export interface IPostUpdateDTO extends IPostDTO {
-  postId: string,
-}
+export type UpdatePost = Partial<CreatePost> & PostId;
 
-export interface IPostRateDTO {
-  type: "LIKE" | "DISLIKE";
-  author_id: number,
-  post_id: string
-}
+export type RatePost = PostId & Auth & Rate; 
 
-export interface ICommentDTO {
-  author_id: number,
-  content: string,
-  post_id: string,
+export interface CreateComment extends Auth, PostId, Omit<CreatePost, "movie_imdb">{
   comment_id?: number
 }
 
-export interface ICommentRateDTO {
-  type: "LIKE" | "DISLIKE";
-  author_id: number,
-  comment_id: string
+export interface UpdateComment extends Auth, Omit<CreatePost, "movie_imdb">{
+  comment_id: number
 }
 
-export interface ICommentUpdateDTO extends Omit<ICommentDTO, "post_id"> {
-  commentId: string,
-}
+export type RateComment = Auth & Rate & CommentId
 
-export interface ICommentDeleteDTO {
-  id: number,
-  author_id: number
-}
+export type DeleteComment = Auth & CommentId

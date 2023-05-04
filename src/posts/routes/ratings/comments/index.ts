@@ -15,15 +15,15 @@ commentRatingRoute.post("/comments/rating",
   authenticateToken,
   create(rateComment)
 );
-commentRatingRoute.get("/comments/:commentId/ratings",
+commentRatingRoute.get("/comments/:comment_id/ratings",
   validateParams(commentIdSchema),
   authenticateToken,
-  get(getPostCommentRatings, "commentId")
+  get(getPostCommentRatings)
 );
-commentRatingRoute.get("/comments/:commentId/ratings/count",
+commentRatingRoute.get("/comments/:comment_id/ratings/count",
   validateParams(commentIdSchema),
   authenticateToken,
-  get(countPostCommentRatings, "commentId")
+  get(countPostCommentRatings)
 );
 
 export default commentRatingRoute;

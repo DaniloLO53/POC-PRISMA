@@ -92,6 +92,7 @@ describe("User's posts", () => {
     const token1 = await generateValidToken(user1);
     const token2 = await generateValidToken(user2);
 
+    
     const resultPost = await server
       .post("/posts")
       .set({ "Authorization": token1 })
@@ -194,7 +195,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         type: "LIKE",
-        post_id: faker.random.numeric()
+        post_id: Number(faker.random.numeric())
       });
 
     expect(resultRating.statusCode).toBe(expectedCode);
@@ -385,7 +386,7 @@ describe("User's posts", () => {
       .set({ "Authorization": token1 })
       .send({
         content: faker.lorem.paragraphs(),
-        post_id: faker.random.numeric()
+        post_id: 55
       });
 
     expect(resultComment.statusCode).toBe(expectedCode);

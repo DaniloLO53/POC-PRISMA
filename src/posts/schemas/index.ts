@@ -8,7 +8,7 @@ export const postSchema = Joi.object(({
 }));
 
 export const postIdSchema = Joi.object(({
-  postId: Joi.number().required(),
+  post_id: Joi.number().required(),
 }));
 
 export const postRatingSchema = Joi.object(({
@@ -29,7 +29,7 @@ export const commentUpdateSchema = Joi.object(({
 }));
 
 export const commentIdSchema = Joi.object(({
-  commentId: Joi.number().required(),
+  comment_id: Joi.number().required(),
 }));
 
 export const commentRatingSchema = Joi.object(({

@@ -1,30 +1,30 @@
 import { PostRating } from "@prisma/client";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
-import { IPostRateDTO } from "@/posts/interfaces";
 import postsRepository from "@/posts/repositories";
+import { PostId, RatePost } from "@/posts/interfaces";
 
-export async function getPostRatings(postId: string) {
-  const post = await postsRepository.findPostById(postId);
+export async function getPostRatings({ post_id }: PostId) {
+  const post = await postsRepository.findPostById(post_id);
   if (!post) throw postNotFoundError();
 
-  const ratings = await postsRepository.findPostRatings(postId);
+  const ratings = await postsRepository.findPostRatings(post_id);
 
 
   return ratings;
 }
 
-export async function countPostRatings(postId: string) {
-  const post = await postsRepository.findPostById(postId);
+export async function countPostRatings({ post_id }: PostId) {
+  const post = await postsRepository.findPostById(post_id);
   if (!post) throw postNotFoundError();
 
-  const ratingsQuantity = await postsRepository.countPostRatings(postId);
+  const ratingsQuantity = await postsRepository.countPostRatings(post_id);
 
   return { ratingsQuantity };
 }
 
 export async function ratePost({
   post_id, author_id, type
-}: IPostRateDTO): Promise<PostRating> {
+}: RatePost): Promise<PostRating> {
   const post = await postsRepository.findPostById(post_id);
 
   if (!post) throw postNotFoundError();

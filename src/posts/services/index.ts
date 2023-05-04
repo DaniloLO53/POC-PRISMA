@@ -31,11 +31,17 @@ const postsService = {
   countPostRatings
 };
 
+export enum PostsUpdatePostServices {
+  updatePost = "updatePost",
+}
+
+export enum PostsUpdateCommentServices {
+  updatePost = "updateComment",
+}
+
 export enum PostsUpdateServices {
   updatePost = "updatePost",
   updateComment = "updateComment",
-  rateComment = "rateComment",
-  ratePost = "ratePost",
 }
 
 export enum PostsRemoveServices {

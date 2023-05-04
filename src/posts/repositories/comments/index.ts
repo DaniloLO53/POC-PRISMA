@@ -1,14 +1,14 @@
 import { Comment } from "@prisma/client";
 import { prisma } from "@/config";
-import { ICommentDeleteDTO, ICommentDTO, ICommentUpdateDTO } from "@/posts/interfaces";
+import { CreateComment, DeleteComment, UpdateComment } from "@/posts/interfaces";
 
 export async function comment({
   post_id, comment_id, author_id, content
-}: ICommentDTO): Promise<Comment> {
+}: CreateComment): Promise<Comment> {
   return await prisma.comment.create({
     data: {
       author_id,
-      post_id: Number(post_id),
+      post_id,
       comment_id: comment_id ? comment_id : null,
       content,
     }
@@ -16,48 +16,48 @@ export async function comment({
 }
 
 export async function updateComment({
-  content, commentId
-}: Omit<ICommentUpdateDTO, "author_id">): Promise<Comment> {
+  content, comment_id
+}: Omit<UpdateComment, "author_id">): Promise<Comment> {
   return await prisma.comment.update({
     data: {
       content,
     },
     where: {
-      id: Number(commentId)
+      id: comment_id
     }
   });
 }
 
 export async function deleteComment({
-  id
-}: Omit<ICommentDeleteDTO, "author_id">): Promise<void> {
+  comment_id
+}: Omit<DeleteComment, "author_id">): Promise<void> {
   await prisma.comment.delete({
     where: {
-      id: Number(id)
+      id: comment_id
     }
   });
 }
 
-export async function findCommentById(commentId: number) {
+export async function findCommentById(comment_id: number) {
   return await prisma.comment.findUnique({
     where: {
-      id: Number(commentId)
+      id: comment_id
     }
   });
 }
 
-export async function findPostComments(postId: string) {
+export async function findPostComments(post_id: number) {
   return await prisma.comment.findMany({
     where: {
-      post_id: Number(postId)
+      post_id
     }
   });
 }
 
-export async function countPostComments(postId: string) {
+export async function countPostComments(post_id: number) {
   return await prisma.comment.count({
     where: {
-      post_id: Number(postId)
+      post_id
     }
   });
 }

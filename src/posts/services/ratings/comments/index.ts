@@ -2,11 +2,11 @@ import { CommentRating } from "@prisma/client";
 import { commentNotFoundError } from "@/errors/notFoundComment.errors";
 import { postNotFoundError } from "@/errors/notFoundPost.errors";
 import postsRepository from "@/posts/repositories";
-import { ICommentRateDTO } from "@/posts/interfaces";
+import { CommentId, RateComment } from "@/posts/interfaces";
 
 export async function rateComment({
   comment_id, author_id, type
-}: ICommentRateDTO): Promise<CommentRating> {
+}: RateComment): Promise<CommentRating> {
   const comment = await postsRepository.findCommentById(Number(comment_id));
 
   if (!comment) throw postNotFoundError();
@@ -18,21 +18,21 @@ export async function rateComment({
   });
 }
 
-export async function getPostCommentRatings(commentId: string) {
-  const comment = await postsRepository.findCommentById(Number(commentId));
+export async function getPostCommentRatings({ comment_id }: CommentId) {
+  const comment = await postsRepository.findCommentById(Number(comment_id));
   if (!comment) throw commentNotFoundError();
 
-  const ratings = await postsRepository.findPostCommentRatings(commentId);
+  const ratings = await postsRepository.findPostCommentRatings(comment_id);
 
 
   return ratings;
 }
 
-export async function countPostCommentRatings(commentId: string) {
-  const comment = await postsRepository.findCommentById(Number(commentId));
+export async function countPostCommentRatings({ comment_id }: CommentId) {
+  const comment = await postsRepository.findCommentById(Number(comment_id));
   if (!comment) throw commentNotFoundError();
 
-  const ratingsQuantity = await postsRepository.countPostCommentRatings(commentId);
+  const ratingsQuantity = await postsRepository.countPostCommentRatings(comment_id);
 
   return { ratingsQuantity };
 }

@@ -15,15 +15,15 @@ postRatingRoute.post("/rating",
   authenticateToken,
   create(ratePost)
 );
-postRatingRoute.get("/:postId/ratings",
+postRatingRoute.get("/:post_id/ratings",
   validateParams(postIdSchema),
   authenticateToken,
-  get(getPostRatings, "postId")
+  get(getPostRatings)
 );
-postRatingRoute.get("/:postId/ratings/count",
+postRatingRoute.get("/:post_id/ratings/count",
   validateParams(postIdSchema),
   authenticateToken,
-  get(countPostRatings, "postId")
+  get(countPostRatings)
 );
 
 export default postRatingRoute;

@@ -1,22 +1,22 @@
 import { Post } from "@prisma/client";
 import { prisma } from "@/config";
-import { IPostDTO, IPostUpdateDTO } from "@/posts/interfaces";
+import { CreatePost, UpdatePost } from "@/posts/interfaces";
 
 export async function findAll() {
   return await prisma.post.findMany();
 }
 
-export async function findPostById(postId: string) {
+export async function findPostById(post_id: number) {
   return await prisma.post.findUnique({
     where: {
-      id: Number(postId)
+      id: post_id
     }
   });
 }
 
 export async function createPost({
   content, author_id, movie_imdb
-}: IPostDTO): Promise<Post> {
+}: CreatePost): Promise<Post> {
   return await prisma.post.create({
     data: {
       author_id,
@@ -27,15 +27,15 @@ export async function createPost({
 }
 
 export async function updatePost({
-  content, movie_imdb, postId
-}: Omit<IPostUpdateDTO, "author_id">): Promise<Post> {
+  content, movie_imdb, post_id
+}: Omit<UpdatePost, "author_id">): Promise<Post> {
   return await prisma.post.update({
     data: {
       content,
       movie_imdb,
     },
     where: {
-      id: Number(postId)
+      id: post_id
     }
   });
 }

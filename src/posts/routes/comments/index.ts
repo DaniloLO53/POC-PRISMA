@@ -22,31 +22,31 @@ const { comment } = PostsCreateServices;
 
 const postsCommentsRoute = express.Router();
 
-postsCommentsRoute.get("/:postId/comments",
+postsCommentsRoute.get("/:post_id/comments",
   validateParams(postIdSchema),
   authenticateToken,
-  get(getPostComments, "postId")
+  get(getPostComments)
 );
-postsCommentsRoute.get("/:postId/comments/count",
+postsCommentsRoute.get("/:post_id/comments/count",
   validateParams(postIdSchema),
   authenticateToken,
-  get(countPostComments, "postId")
+  get(countPostComments)
 );
 postsCommentsRoute.post("/comments",
   validateBody(commentSchema),
   authenticateToken,
   create(comment)
 );
-postsCommentsRoute.put("/comments/:commentId",
+postsCommentsRoute.put("/comments/:comment_id",
   validateBody(commentUpdateSchema),
   validateParams(commentIdSchema),
   authenticateToken,
-  update(updateComment, "commentId")
+  update(updateComment)
 );
-postsCommentsRoute.delete("/comments/:commentId",
+postsCommentsRoute.delete("/comments/:comment_id",
   validateParams(commentIdSchema),
   authenticateToken,
-  remove(deleteComment, "commentId")
+  remove(deleteComment)
 );
 
 export default postsCommentsRoute;
