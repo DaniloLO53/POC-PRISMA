@@ -1,12 +1,21 @@
-import { User } from "@prisma/client";
-import bcrypt from "bcrypt";
-import { IUserData } from "@/users/schemas";
+import { faker } from "@faker-js/faker";
 import { prisma } from "@/config";
 
-export async function mockCreateUser(userData: IUserData): Promise<User> {
-  const hashedPassword = await bcrypt.hash(userData.password, 12);
+interface SignupData {
+  email?: string;
+  password?: string
+}
 
+export async function signup({ email, password }: SignupData = {}) {
+  const defaultData = {
+    email: faker.internet.email(),
+    password: faker.internet.password(4) + "*Aa1",
+  };
+  
   return prisma.user.create({
-    data: { ...userData, password: hashedPassword }
+    data: {
+      email: email || defaultData.email,
+      password: password || defaultData.password,
+    }
   });
 }

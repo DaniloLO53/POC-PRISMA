@@ -3,8 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser"; 
 import { connectPrisma, disconnectPrisma, loadEnv } from "./config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-import { postsRoute } from "./posts/routes";
-import { usersRoute } from "./users/routes";
+import usersRoutes from "./routes/users.routes";
 
 loadEnv();
 
@@ -15,8 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app
-  .use("/users", usersRoute)
-  .use("/posts", postsRoute)
+  .use(usersRoutes)
   .use(errorHandler);
 
 export async function init(): Promise<Express> {

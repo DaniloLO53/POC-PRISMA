@@ -17,7 +17,7 @@ model User {
   first_name           String?
   last_name            String?
   picture_id           Int?
-  birth                String
+  birth                String?
   description          String? // to be implemented...
   posts                Post[]
   post_ratings         PostRating[]
@@ -28,6 +28,7 @@ model User {
   events_post          EventPost[]
   followers            Relationship[]     @relation("followed")
   following            Relationship[]     @relation("following")
+  updated_at           DateTime           @updatedAt
   created_at           DateTime           @default(now())
 }
 

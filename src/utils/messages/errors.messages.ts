@@ -9,4 +9,5 @@ export enum MessagesErrors {
   NOT_FOLLOWING = "Not following this user",
   INVALID_DATA = "Invalid data",
   UNAUTHORIZED = "No token or invalid token",
+  UNMATCH_PASSOWRD = "Passwords must match",
 }
