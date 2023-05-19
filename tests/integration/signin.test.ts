@@ -28,4 +28,26 @@ describe("POST /sign-in", () => {
 
     expect(response.statusCode).toBe(401);
   });
+
+  it("should return 401 if password is not correct", async () => {
+    const password = faker.internet.password(6);
+    const usersData = {
+      email: faker.internet.email(),
+      password,
+      confirmPassword: password
+    };
+
+    await server
+      .post("/sign-up")
+      .send(usersData);
+
+    const response = await server
+      .post("/sign-in")
+      .send({
+        email: usersData.email,
+        password: faker.internet.password(6)
+      });
+    
+    expect(response.statusCode).toBe(401);
+  });
 });

@@ -1,9 +1,17 @@
 import { duplicatedUserError } from "@/errors/duplicatedUser.errors";
 import { passwordUnmatchError } from "@/errors/passwordUnmatch.errors";
 import { unauthorizedError } from "@/errors/unauthorizedError.errors";
-import { hashPassword } from "@/helpers/hashPassword";
+import { hashPassword, validatePassword } from "@/helpers/hashPassword";
 import { User } from "@/interfaces/users";
 import usersRepositories from "@/repositories/users";
+
+async function checkEmailAndPassword({ email, password }: Omit<User, "confirmPassword">) {
+  const dbUser = await usersRepositories.findUserByEmail(email);
+  if (!dbUser) throw unauthorizedError();
+
+  const passwordVerify = await validatePassword(password, dbUser.password);
+  if (!passwordVerify) throw unauthorizedError();
+}
 
 export async function signup({ email, password, confirmPassword }: User) {
   // double check - it was already checked on schema
@@ -19,9 +27,7 @@ export async function signup({ email, password, confirmPassword }: User) {
 }
 
 export async function signin({ email, password }: Omit<User, "confirmPassword">) {
-  const dbUser = await usersRepositories.findUserByEmail(email);
-
-  if (!dbUser) throw unauthorizedError();
+  await checkEmailAndPassword({ email, password });
 
   return "token";
 }
