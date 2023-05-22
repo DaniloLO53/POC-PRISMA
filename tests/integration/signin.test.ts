@@ -1,8 +1,10 @@
 import supertest from "supertest";
 import { faker } from "@faker-js/faker";
 import { JwtPayload } from "jsonwebtoken";
-import { cleanDb, JWTUserData } from "../helpers";
+import { User } from "@prisma/client";
+import { cleanDb, findUserByEmail, JWTUserData, verifyJWTHasPassword } from "../helpers";
 import app, { init } from "@/app";
+import { validatePassword } from "@/helpers/hashPassword";
 
 const server = supertest(app);
 
@@ -52,7 +54,7 @@ describe("POST /sign-in", () => {
     expect(response.statusCode).toBe(401);
   });
 
-  it("should return correct token after login", async () => {
+  it("should return correct token after login, without storing password", async () => {
     const password = faker.internet.password(6);
     const userData = {
       email: faker.internet.email(),
@@ -70,14 +72,12 @@ describe("POST /sign-in", () => {
         email: userData.email,
         password: userData.password
       });
+    const JWTUser = JWTUserData(response.body.token) as JwtPayload;
 
-    const {
-      email: JWTEmail,
-      password: JWTPassword
-    } = JWTUserData(response.body.token) as JwtPayload;
-    
-    expect(JWTEmail).toBe(userData.email);
-    expect(JWTPassword).toBe(userData.password);
+    const hasPassword = await verifyJWTHasPassword(JWTUser, userData);
+
+    expect(JWTUser.email).toBe(userData.email);
+    expect(hasPassword).toBe(false);
     expect(typeof response.body.token).toBe("string");
   });
 });

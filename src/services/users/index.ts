@@ -33,7 +33,7 @@ export async function signup({ email, password, confirmPassword }: User) {
 export async function signin({ email, password }: Omit<User, "confirmPassword">) {
   await checkEmailAndPassword({ email, password });
 
-  const token = jwt.sign({ email, password }, process.env.JWT_SECRET as string);
+  const token = jwt.sign({ email }, process.env.JWT_SECRET as string);
 
   return {
     token
