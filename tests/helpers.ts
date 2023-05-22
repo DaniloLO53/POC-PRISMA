@@ -30,3 +30,10 @@ export async function generateValidToken(user: User) {
 
   return `Bearer ${token}`;
 }
+
+export function JWTUserData(token: string) {
+  const userData = jwt.verify(token, process.env.JWT_SECRET as string);
+
+  return userData;
+}
+

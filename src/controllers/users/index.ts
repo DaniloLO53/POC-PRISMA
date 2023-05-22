@@ -20,7 +20,7 @@ export async function signin(request: Request, response: Response, next: NextFun
 
     const token = await usersServices.signin({ email, password });
 
-    return response.status(Successful.CREATED).send({ token });
+    return response.status(Successful.CREATED).send(token);
   } catch (error) {
     next(error);
   }

@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import { faker } from "@faker-js/faker";
-import { cleanDb } from "../helpers";
+import { JwtPayload } from "jsonwebtoken";
+import { cleanDb, JWTUserData } from "../helpers";
 import app, { init } from "@/app";
 
 const server = supertest(app);
@@ -49,5 +50,34 @@ describe("POST /sign-in", () => {
       });
     
     expect(response.statusCode).toBe(401);
+  });
+
+  it("should return correct token after login", async () => {
+    const password = faker.internet.password(6);
+    const userData = {
+      email: faker.internet.email(),
+      password,
+      confirmPassword: password
+    };
+
+    await server
+      .post("/sign-up")
+      .send(userData);
+
+    const response = await server
+      .post("/sign-in")
+      .send({
+        email: userData.email,
+        password: userData.password
+      });
+
+    const {
+      email: JWTEmail,
+      password: JWTPassword
+    } = JWTUserData(response.body.token) as JwtPayload;
+    
+    expect(JWTEmail).toBe(userData.email);
+    expect(JWTPassword).toBe(userData.password);
+    expect(typeof response.body.token).toBe("string");
   });
 });
