@@ -79,5 +79,6 @@ describe("POST /sign-in", () => {
     expect(JWTUser.email).toBe(userData.email);
     expect(hasPassword).toBe(false);
     expect(typeof response.body.token).toBe("string");
+    expect(response.statusCode).toBe(201);
   });
 });
