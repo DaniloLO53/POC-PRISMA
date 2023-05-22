@@ -1,10 +1,13 @@
 import supertest from "supertest";
 import { faker } from "@faker-js/faker";
 import { JwtPayload } from "jsonwebtoken";
-import { User } from "@prisma/client";
-import { cleanDb, findUserByEmail, JWTUserData, verifyJWTHasPassword } from "../helpers";
+import {
+  cleanDb,
+  extractTokenFromCookies,
+  JWTUserData,
+  verifyJWTHasPassword
+} from "../helpers";
 import app, { init } from "@/app";
-import { validatePassword } from "@/helpers/hashPassword";
 
 const server = supertest(app);
 
@@ -80,5 +83,31 @@ describe("POST /sign-in", () => {
     expect(hasPassword).toBe(false);
     expect(typeof response.body.token).toBe("string");
     expect(response.statusCode).toBe(201);
+  });
+
+  it("should store token in cookies", async () => {
+    const password = faker.internet.password(6);
+    const userData = {
+      email: faker.internet.email(),
+      password,
+      confirmPassword: password
+    };
+  
+    await server
+      .post("/sign-up")
+      .send(userData);
+  
+    const response = await server
+      .post("/sign-in")
+      .send({
+        email: userData.email,
+        password: userData.password
+      });
+
+    const token = extractTokenFromCookies(response.header["set-cookie"]);
+
+    expect(response.header["set-cookie"]).toBeDefined();
+    expect(response.body.token).toBe(token.tokenValue);
+    expect("user-token").toBe(token.tokenKey);
   });
 });

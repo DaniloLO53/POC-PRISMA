@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { Response } from "express";
 import { duplicatedUserError } from "@/errors/duplicatedUser.errors";
 import { passwordUnmatchError } from "@/errors/passwordUnmatch.errors";
 import { unauthorizedError } from "@/errors/unauthorizedError.errors";
@@ -30,10 +31,16 @@ export async function signup({ email, password, confirmPassword }: User) {
   return await usersRepositories.createUser({ email, password: hashedPassword });
 }
 
-export async function signin({ email, password }: Omit<User, "confirmPassword">) {
+export async function signin({
+  email,
+  password,
+}: Omit<User, "confirmPassword">,
+response: Response
+) {
   await checkEmailAndPassword({ email, password });
 
   const token = jwt.sign({ email }, process.env.JWT_SECRET as string);
+  response.cookie("user-token", token, { httpOnly: true, maxAge: 1000 * 3600 * 24 });
 
   return {
     token

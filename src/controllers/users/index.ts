@@ -18,7 +18,7 @@ export async function signin(request: Request, response: Response, next: NextFun
   try {
     const { email, password } = request.body;
 
-    const token = await usersServices.signin({ email, password });
+    const token = await usersServices.signin({ email, password }, response);
 
     return response.status(Successful.CREATED).send(token);
   } catch (error) {

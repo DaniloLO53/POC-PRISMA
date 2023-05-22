@@ -59,3 +59,14 @@ export async function verifyJWTHasPassword(JWTUser: jwt.JwtPayload, userData: IU
 
   return hasPassword;
 }
+
+export function extractTokenFromCookies(cookies: string[]) {
+  const [cookie] = cookies;
+  const [tokenEntry] = cookie.split(";");
+  const [tokenKey, tokenValue] = tokenEntry.split("=");
+
+  return {
+    tokenKey,
+    tokenValue
+  };
+}
